@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1117">
+<style>
+/* ── GLIDER ACADEMY — shared.css ── */
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--card:#1c2128;--card2:#252c36;
+  --blue:#2f81f7;--bd:rgba(47,129,247,0.15);--bs:rgba(47,129,247,0.3);
+  --teal:#3fb950;--td:rgba(63,185,80,0.12);
+  --amber:#d29922;--ad:rgba(210,153,34,0.12);
+  --coral:#f85149;--cd:rgba(248,81,73,0.12);
+  --purple:#a371f7;--pd:rgba(163,113,247,0.12);
+  --text:#e6edf3;--t2:#8b949e;--t3:#484f58;
+  --border:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);
+  --r:12px;--rs:8px;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{padding-bottom:24px}
+
+/* HEADER */
+.app-header{padding:calc(var(--st)+10px) 14px 10px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+.back-link{color:var(--blue);font-size:15px;text-decoration:none;white-space:nowrap;padding:4px 0}
+.header-info{flex:1;min-width:0}
+.header-title{font-size:16px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-sub{font-size:11px;color:var(--t3);margin-top:1px}
+.xp-pill{font-size:12px;background:var(--bd);color:var(--blue);border:1px solid var(--bs);padding:3px 10px;border-radius:99px;font-weight:600;white-space:nowrap}
+
+/* PROGRESS STEPS */
+.step-bar{display:flex;gap:4px;padding:12px 14px 0}
+.step-pip{flex:1;height:4px;border-radius:2px;background:var(--bg3);transition:background .3s;cursor:pointer}
+.step-pip.done{background:var(--teal)}
+.step-pip.active{background:var(--blue);opacity:.6}
+.step-label{font-size:12px;color:var(--t2);padding:6px 14px 14px;font-weight:500}
+
+/* CONTENT */
+.lesson-content{padding:16px 14px}
+.big-idea{font-size:20px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:12px}
+.body-text{font-size:15px;color:var(--t2);line-height:1.8;margin-bottom:12px}
+.body-text strong{color:var(--text);font-weight:600}
+
+/* CALLOUTS */
+.callout{border-left:3px solid var(--blue);background:var(--bd);border-radius:0 var(--rs) var(--rs) 0;padding:11px 13px;margin:12px 0;font-size:14px;color:var(--t2);line-height:1.7}
+.callout strong{color:var(--text);font-weight:600}
+.callout.teal{border-left-color:var(--teal);background:var(--td)}
+.callout.amber{border-left-color:var(--amber);background:var(--ad)}
+.callout.coral{border-left-color:var(--coral);background:var(--cd)}
+.callout.purple{border-left-color:var(--purple);background:var(--pd)}
+
+/* SECTION LABELS */
+.sec-label{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);padding:16px 14px 8px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin:0 12px 12px;overflow:hidden}
+.card-pad{padding:13px 14px}
+
+/* INTERACTIVE CANVAS */
+.vis-wrap{margin:0 12px 12px}
+.vis-canvas{width:100%;border-radius:var(--rs);border:1px solid var(--border);display:block;background:var(--bg3)}
+
+/* CONTROLS */
+.ctrl-group{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;margin:0 12px 12px}
+.ctrl-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ctrl-row:last-child{margin-bottom:0}
+.ctrl-label{font-size:13px;color:var(--t2);min-width:100px;flex-shrink:0}
+.ctrl-val{font-size:13px;font-weight:700;min-width:58px;text-align:right;color:var(--text)}
+input[type=range]{-webkit-appearance:none;flex:1;height:4px;border-radius:2px;background:var(--bg3);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--blue);cursor:pointer;border:2px solid var(--bg)}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 12px;margin-bottom:12px}
+.stat-row.two{grid-template-columns:repeat(2,1fr)}
+.stat{background:var(--bg3);border-radius:var(--rs);padding:10px 8px;text-align:center}
+.stat-label{font-size:10px;color:var(--t3);margin-bottom:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.stat-val{font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.stat-unit{font-size:10px;color:var(--t2);margin-left:2px}
+
+/* MODE BUTTONS */
+.mode-btns{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px;margin-bottom:12px}
+.mode-btn{font-size:12px;padding:6px 12px;border-radius:99px;border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.mode-btn.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* GUIDED NOTES */
+.gnote-wrap{background:rgba(210,153,34,0.06);border:1px solid rgba(210,153,34,0.2);border-radius:var(--r);padding:14px;margin:0 12px 12px}
+.gnote-header{font-size:12px;font-weight:700;color:var(--amber);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.gnote-item{margin-bottom:14px}
+.gnote-item:last-child{margin-bottom:0}
+.gnote-q{font-size:14px;color:var(--text);line-height:1.55;margin-bottom:6px}
+.gnote-hint{font-size:12px;color:var(--t3);margin-bottom:6px;font-style:italic}
+.gnote-input{width:100%;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.gnote-input:focus{border-color:var(--amber)}
+.gnote-input.has-value{border-color:rgba(210,153,34,0.4)}
+.gnote-reveal{font-size:12px;color:var(--amber);background:none;border:1px solid rgba(210,153,34,0.3);border-radius:99px;padding:3px 10px;cursor:pointer;margin-top:5px}
+.gnote-answer{font-size:13px;color:var(--teal);background:var(--td);border-radius:var(--rs);padding:9px 11px;margin-top:6px;line-height:1.6;display:none}
+
+/* QUIZ */
+.quiz-wrap{padding:0 12px 12px}
+.quiz-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.quiz-num{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.05em}
+.quiz-score{font-size:11px;color:var(--teal);font-weight:600}
+.quiz-q{font-size:15px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:12px}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{font-size:14px;padding:11px 13px;border:1px solid var(--b2);border-radius:var(--rs);background:transparent;color:var(--text);cursor:pointer;text-align:left;transition:background .1s;line-height:1.4}
+.quiz-opt:active{background:var(--bg3)}
+.quiz-opt.correct{background:var(--td);border-color:var(--teal);color:#3fb950;font-weight:500}
+.quiz-opt.wrong{background:var(--cd);border-color:var(--coral);color:#f85149}
+.quiz-opt.reveal{background:var(--td);border-color:var(--teal);color:#3fb950}
+.quiz-feedback{font-size:13px;color:var(--t2);margin-top:10px;line-height:1.65;display:none;padding:10px 11px;background:var(--bg3);border-radius:var(--rs)}
+.quiz-feedback.show{display:block}
+.fb-ok{color:var(--teal);font-weight:700}.fb-bad{color:var(--coral);font-weight:700}
+.quiz-dots{display:flex;gap:5px;padding:0 12px;margin-bottom:8px}
+.quiz-dot{width:9px;height:9px;border-radius:50%;background:var(--bg3);cursor:pointer;transition:transform .1s}
+.quiz-dot:active{transform:scale(1.4)}
+.quiz-dot.right{background:var(--teal)}.quiz-dot.wrong{background:var(--coral)}.quiz-dot.current{background:var(--blue)}
+.quiz-nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px}
+.quiz-nav-btn{font-size:13px;padding:8px 16px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;white-space:nowrap}
+.quiz-nav-btn:disabled{opacity:.25;cursor:default}
+.quiz-nav-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* SCORE SCREEN */
+.score-screen{text-align:center;padding:32px 20px}
+.score-big{font-size:64px;font-weight:800;color:var(--text);line-height:1}
+.score-pct{font-size:15px;color:var(--t2);margin:4px 0 16px}
+.score-msg{font-size:18px;font-weight:700;margin-bottom:6px}
+.score-sub{font-size:14px;color:var(--t2);line-height:1.65;margin-bottom:24px;max-width:320px;margin-left:auto;margin-right:auto}
+.btn-group{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.btn{font-size:14px;font-weight:500;padding:11px 20px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--text);cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-teal{background:var(--teal);color:#000;border-color:var(--teal)}
+
+/* STEP NAV */
+.step-nav{display:flex;gap:8px;padding:8px 12px 16px;position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border)}
+.step-nav .btn{flex:1}
+
+/* BADGES */
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
+
+/* TOAST */
+@keyframes toast-up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+.toast{position:fixed;top:64px;right:14px;padding:6px 14px;border-radius:99px;font-weight:700;font-size:13px;z-index:999;pointer-events:none;animation:toast-up 1s ease forwards}
+
+/* UTIL */
+.text-center{text-align:center}
+.mt-8{margin-top:8px}
+.mb-0{margin-bottom:0}
+
+</style>
+<title>Lesson 5 — Algebra Basics</title>
+</head>
+<body>
+<div class="app-header">
+  <a class="back-link" href="index.html">← Home</a>
+  <div class="header-info">
+    <div class="header-title">Algebra Basics for Engineers</div>
+    <div class="header-sub">Lesson 5 · Math</div>
+  </div>
+  <div class="xp-pill" id="xp-pill">0 XP</div>
+</div>
+<div class="step-bar">
+  <div class="step-pip active" onclick="stepEngine.show(0)"></div>
+  <div class="step-pip" onclick="stepEngine.show(1)"></div>
+  <div class="step-pip" onclick="stepEngine.show(2)"></div>
+  <div class="step-pip" onclick="stepEngine.show(3)"></div>
+  <div class="step-pip" onclick="stepEngine.show(4)"></div>
+</div>
+<div class="step-label" id="step-label">Part 1 of 5</div>
+
+<div id="step-0">
+  <div class="lesson-content">
+    <div class="tag" style="background:#d2992222;color:#d29922;margin-bottom:10px">The big idea</div>
+    <div class="big-idea">Algebra is rearranging. One formula — used three different ways.</div>
+    <div class="body-text">Every engineering calculation you'll ever do is just taking a formula and rearranging it to find the missing piece. You already know Distance = Speed × Time. From that one formula, you can find Speed and Time too — just by covering the variable you want and reading what remains. This is the only algebra skill you need right now.</div>
+    <div class="callout"><strong>The triangle method:</strong> Write D on top, S and T side by side on the bottom (like a fraction with a multiplication sign). Cover whichever variable you want to find. What remains tells you exactly what to do: D covered = S×T, S covered = D÷T, T covered = D÷S.</div>
+    <div class="callout teal"><strong>This is real engineering:</strong> Every formula your flight controller runs is rearranged versions of basic relationships. Once you can rearrange, you can derive any variation you need on the fly.</div>
+  </div>
+  <div class="sec-label">Interactive triangle — tap a variable to solve for it</div>
+  <div class="card card-pad" style="text-align:center;margin-bottom:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+      <div style="grid-column:1/3">
+        <button onclick="solveTri('D')" style="width:120px;padding:14px;border-radius:var(--rs);font-size:18px;font-weight:800;cursor:pointer;border:2px solid var(--b2);background:var(--bg3);color:var(--text);transition:all .15s" id="tri-d">D</button>
+      </div>
+      <button onclick="solveTri('S')" style="padding:14px;border-radius:var(--rs);font-size:18px;font-weight:800;cursor:pointer;border:2px solid var(--b2);background:var(--bg3);color:var(--text);transition:all .15s" id="tri-s">S</button>
+      <button onclick="solveTri('T')" style="padding:14px;border-radius:var(--rs);font-size:18px;font-weight:800;cursor:pointer;border:2px solid var(--b2);background:var(--bg3);color:var(--text);transition:all .15s" id="tri-t">T</button>
+    </div>
+    <div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px" id="tri-formula">Tap a letter to solve for it</div>
+    <div style="font-size:14px;color:var(--t2)" id="tri-explain">Cover the variable you want to find — what remains is your formula</div>
+  </div>
+  <div class="callout amber"><strong>Apply it:</strong> A glider flies 240 m in 15 seconds. Tap S to find its speed.</div>
+  <div class="step-nav"><button class="btn btn-primary" onclick="stepEngine.next()">Next: Hover thrust →</button></div>
+</div>
+
+<div id="step-1" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#d2992222;color:#d29922;margin-bottom:10px">Hover thrust</div>
+    <div class="big-idea">The first real engineering calculation for your build: how much thrust do you need to hover?</div>
+    <div class="body-text">Thrust needed to hover = mass × 9.8. This comes from Force = mass × acceleration, where the acceleration is gravity (9.8 m/s²). For hover, the upward force (thrust) must exactly equal the downward force (weight). Drag the mass slider and watch the required thrust update in real time.</div>
+    <div class="callout"><strong>Why this matters now:</strong> When you go to select a motor for your custom glider, the first thing you check is whether it produces enough thrust to lift the aircraft. If the aircraft weighs 0.5 kg, you need at least 4.9 N of thrust just to hover — and typically 2× that for adequate climb performance.</div>
+  </div>
+  <div class="sec-label">Mass → required hover thrust calculator</div>
+  <div class="ctrl-group">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Aircraft mass</span>
+      <input type="range" min="1" max="15" value="5" step="1" id="sl-hmass" oninput="updateHover()">
+      <span class="ctrl-val" id="cv-hmass">0.5 kg</span>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-label">Mass</div><div class="stat-val" id="sv-hm">0.5<span class="stat-unit">kg</span></div></div>
+    <div class="stat"><div class="stat-label">Hover thrust</div><div class="stat-val" id="sv-ht">4.9<span class="stat-unit">N</span></div></div>
+    <div class="stat"><div class="stat-label">Per motor (÷4)</div><div class="stat-val" id="sv-hpm">1.2<span class="stat-unit">N</span></div></div>
+  </div>
+  <div class="card card-pad">
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px">Working it out:</div>
+    <div style="font-size:15px;color:var(--t2);line-height:1.9" id="hover-working">
+      Hover thrust = mass × 9.8<br>= 0.5 × 9.8<br>= 4.9 N total<br>÷ 4 motors = 1.2 N per motor
+    </div>
+  </div>
+  <div class="callout teal"><strong>Rule of thumb:</strong> For good climb performance, your motors should produce 2× the hover thrust at full power. So a 0.5 kg glider wants motors capable of ~10 N total thrust max. This is why motor selection starts with weighing your aircraft.</div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Next: Range formula →</button>
+  </div>
+</div>
+
+<div id="step-2" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#d2992222;color:#d29922;margin-bottom:10px">Range formula</div>
+    <div class="big-idea">Range = altitude × glide ratio. Rearrange it and you can plan any motor-off glide mission.</div>
+    <div class="body-text">Three versions of the same formula: <strong>Range = altitude × glide ratio</strong> | <strong>Altitude = range ÷ glide ratio</strong> | <strong>Glide ratio = range ÷ altitude</strong>. All three are the same equation rearranged. Pick the one where you know two values and want the third.</div>
+    <div class="callout"><strong>Mission example:</strong> You want to silently overfly a 2.5 km stretch with motor off. Your glider has a 1:12 glide ratio. What altitude do you need to start the glide? Altitude = range ÷ glide ratio = 2500 ÷ 12 = 208 m. Launch from 210 m to have a small safety margin.</div>
+  </div>
+  <div class="sec-label">Glide mission planner — adjust values and solve</div>
+  <div class="ctrl-group">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Altitude (m)</span>
+      <input type="range" min="50" max="500" value="200" step="10" id="sl-alt" oninput="updateRange()">
+      <span class="ctrl-val" id="cv-alt">200 m</span>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">Glide ratio</span>
+      <input type="range" min="5" max="25" value="12" step="1" id="sl-gr" oninput="updateRange()">
+      <span class="ctrl-val" id="cv-gr">1:12</span>
+    </div>
+  </div>
+  <div class="stat-row two">
+    <div class="stat"><div class="stat-label">Motor-off range</div><div class="stat-val" id="sv-range">2,400<span class="stat-unit">m</span></div></div>
+    <div class="stat"><div class="stat-label">That's about</div><div class="stat-val" id="sv-range-km" style="font-size:15px">2.4 km</div></div>
+  </div>
+  <div class="card card-pad"><div style="font-size:15px;color:var(--t2);line-height:2" id="range-working">Range = 200 m × 12 = 2,400 m</div></div>
+  <div class="callout amber" id="range-callout">A well-designed glider at 1:12 from 200 m altitude covers 2.4 km silently. That's tactically significant range.</div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Guided notes →</button>
+  </div>
+</div>
+
+<div id="step-3" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#d2992222;color:#d29922;margin-bottom:10px">Guided notes</div>
+    <div class="big-idea">Practise the rearrangements.</div>
+    <div class="body-text">Fill these in from memory — use the hint if stuck. These calculations come up constantly in real builds.</div>
+  </div>
+  <div id="gnotes-container"></div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Quiz →</button>
+  </div>
+</div>
+
+<div id="step-4" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#d2992222;color:#d29922;margin-bottom:10px">Practice — 5 questions</div>
+    <div class="big-idea">Real engineering calculations.</div>
+    <div class="body-text">Each question is a real calculation you'll use during your build.</div>
+  </div>
+  <div class="quiz-dots" id="quiz-dots"></div>
+  <div class="quiz-wrap" id="quiz-container"></div>
+</div>
+
+<script>
+// ── GLIDER ACADEMY — shared.js ──
+const GA_KEY = 'glider_academy_v5';
+
+const GA = {
+  // ── STATE ──────────────────────────────────────────────
+  state: {
+    xp: 0, streak: 0, lastStudy: null,
+    done: [0,1,2],
+    notes: {},       // { lessonId: { 'gn0': 'answer', ... } }
+    quizBest: {}     // { lessonId: score }
+  },
+
+  // ── STORAGE ────────────────────────────────────────────
+  save() {
+    try { localStorage.setItem(GA_KEY, JSON.stringify(this.state)); } catch(e) {}
+  },
+
+  load() {
+    try {
+      const raw = localStorage.getItem(GA_KEY);
+      if (raw) {
+        const p = JSON.parse(raw);
+        if (Array.isArray(p.done)) this.state.done = p.done;
+        if (typeof p.xp === 'number') this.state.xp = p.xp;
+        if (typeof p.streak === 'number') this.state.streak = p.streak;
+        if (p.lastStudy) this.state.lastStudy = p.lastStudy;
+        if (p.notes && typeof p.notes === 'object') this.state.notes = p.notes;
+        if (p.quizBest && typeof p.quizBest === 'object') this.state.quizBest = p.quizBest;
+      }
+    } catch(e) {}
+    // Always ensure first 3 lessons marked done
+    [0,1,2].forEach(i => { if (!this.state.done.includes(i)) this.state.done.push(i); });
+  },
+
+  // ── XP & STREAK ────────────────────────────────────────
+  addXP(n) {
+    this.state.xp += n;
+    this.save();
+    this.showToast('+' + n + ' XP', '#3fb950', '#000');
+    this.updateXPPill();
+  },
+
+  markStudied() {
+    const td = new Date().toDateString();
+    const yd = new Date(Date.now() - 86400000).toDateString();
+    if (this.state.lastStudy !== td) {
+      this.state.streak = this.state.lastStudy === yd ? this.state.streak + 1 : 1;
+      this.state.lastStudy = td;
+      this.save();
+    }
+  },
+
+  completeLesson(id, score, total) {
+    const isNew = !this.state.done.includes(id);
+    if (isNew && score >= Math.ceil(total * 0.6)) {
+      this.state.done.push(id);
+      this.state.quizBest[id] = score;
+      this.save();
+      this.addXP(50);
+      return true;
+    }
+    if (score > (this.state.quizBest[id] || 0)) {
+      this.state.quizBest[id] = score;
+      this.save();
+    }
+    return isNew && score >= Math.ceil(total * 0.6);
+  },
+
+  // ── NOTES ──────────────────────────────────────────────
+  saveNote(lessonId, key, val) {
+    if (!this.state.notes[lessonId]) this.state.notes[lessonId] = {};
+    this.state.notes[lessonId][key] = val;
+    this.save();
+  },
+
+  getNote(lessonId, key) {
+    return (this.state.notes[lessonId] || {})[key] || '';
+  },
+
+  // ── UI HELPERS ─────────────────────────────────────────
+  showToast(text, bg, color) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = text;
+    el.style.background = bg || 'var(--teal)';
+    el.style.color = color || '#000';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1050);
+  },
+
+  updateXPPill() {
+    const el = document.getElementById('xp-pill');
+    if (el) el.textContent = this.state.xp + ' XP';
+  },
+
+  isAvailable(id) {
+    return this.state.done.includes(id) || id === 0 ||
+      this.state.done.includes(id - 1) ||
+      id <= Math.max(-1, ...this.state.done) + 1;
+  }
+};
+
+// ── GUIDED NOTES COMPONENT ────────────────────────────────
+function buildGuidedNotes(lessonId, notes) {
+  const saved = GA.state.notes[lessonId] || {};
+  let html = `<div class="gnote-wrap">
+    <div class="gnote-header">✏️ Guided notes — fill in as you read</div>`;
+  notes.forEach((n, i) => {
+    const val = saved['gn' + i] || '';
+    html += `<div class="gnote-item">
+      <div class="gnote-q">${n.q}</div>
+      <div class="gnote-hint">Hint: ${n.hint}</div>
+      <input type="text" class="gnote-input${val ? ' has-value' : ''}" id="gn-${i}"
+        value="${escHTML(val)}" placeholder="Your answer..."
+        oninput="onGNote(${i},this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div style="display:flex;align-items:center;gap:8px;margin-top:5px">
+        <button class="gnote-reveal" onclick="toggleAnswer(${i})">Show answer</button>
+        <span id="gns-${i}" style="font-size:11px;color:var(--t3);opacity:0;transition:opacity .3s">Saved ✓</span>
+      </div>
+      <div class="gnote-answer" id="gna-${i}">${n.answer}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function onGNote(i, val) {
+  const inp = document.getElementById('gn-' + i);
+  if (inp) inp.classList.toggle('has-value', val.length > 0);
+  GA.saveNote(window.LESSON_ID, 'gn' + i, val);
+  const ns = document.getElementById('gns-' + i);
+  if (ns) { ns.style.opacity = '1'; setTimeout(() => ns.style.opacity = '0', 1400); }
+}
+
+function toggleAnswer(i) {
+  const el = document.getElementById('gna-' + i);
+  if (el) el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function escHTML(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── QUIZ ENGINE ───────────────────────────────────────────
+class QuizEngine {
+  constructor(quizzes, containerId, dotsId) {
+    this.quizzes = quizzes;
+    this.container = document.getElementById(containerId);
+    this.dotsEl = document.getElementById(dotsId);
+    this.current = 0;
+    this.scores = new Array(quizzes.length).fill(null);
+    this.history = new Array(quizzes.length).fill(null);
+    this.answered = false;
+    this.onComplete = null;
+    this.buildDots();
+    this.render();
+  }
+
+  buildDots() {
+    if (!this.dotsEl) return;
+    this.dotsEl.innerHTML = this.quizzes.map((_, i) =>
+      `<div class="quiz-dot" id="qd${i}" onclick="quizEngine.jumpTo(${i})"></div>`
+    ).join('');
+    this.updateDots();
+  }
+
+  updateDots() {
+    this.quizzes.forEach((_, i) => {
+      const d = document.getElementById('qd' + i);
+      if (!d) return;
+      if (this.scores[i] === true) d.className = 'quiz-dot right';
+      else if (this.scores[i] === false) d.className = 'quiz-dot wrong';
+      else if (i === this.current) d.className = 'quiz-dot current';
+      else d.className = 'quiz-dot';
+    });
+  }
+
+  render() {
+    if (!this.container) return;
+    if (this.current >= this.quizzes.length) { this.showScore(); return; }
+    const q = this.quizzes[this.current];
+    const alreadyAnswered = this.history[this.current] !== null;
+    const rightSoFar = this.scores.filter(s => s === true).length;
+    this.answered = alreadyAnswered;
+
+    this.container.innerHTML = `
+      <div class="quiz-block">
+        <div class="quiz-meta">
+          <span class="quiz-num">Q${this.current + 1} / ${this.quizzes.length}</span>
+          <span class="quiz-score">${rightSoFar} correct</span>
+        </div>
+        <div class="quiz-q">${q.q}</div>
+        <div class="quiz-opts">
+          ${q.opts.map((o, i) => `<button class="quiz-opt" id="qo${i}" onclick="quizEngine.answer(${i})">${o}</button>`).join('')}
+        </div>
+        <div class="quiz-feedback" id="qfb"></div>
+        <div class="quiz-nav-row">
+          <button class="quiz-nav-btn" ${this.current === 0 ? 'disabled' : ''} onclick="quizEngine.prev()">← Back</button>
+          <span style="font-size:12px;color:var(--t3)">${this.current + 1} of ${this.quizzes.length}</span>
+          <button class="quiz-nav-btn primary" id="qnext" style="display:none" onclick="quizEngine.next()">Next →</button>
+        </div>
+      </div>`;
+
+    // Restore previously answered state
+    if (alreadyAnswered) {
+      const prev = this.history[this.current];
+      document.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+      document.getElementById('qo' + prev).classList.add(prev === q.c ? 'correct' : 'wrong');
+      if (prev !== q.c) document.getElementById('qo' + q.c).classList.add('reveal');
+      const fb = document.getElementById('qfb'); fb.classList.add('show');
+      fb.innerHTML = `<span class="${prev === q.c ? 'fb-ok' : 'fb-bad'}">${prev === q.c ? 'Correct.' : 'Not quite.'}</span> ${prev === q.c ? q.good : q.miss}`;
+      const nb = document.getElementById('qnext'); if (nb) nb.style.display = 'block';
+    }
+    this.updateDots();
+  }
+
+  answer(i) {
+    if (this.answered) return;
+    this.answered = true;
+    const q = this.quizzes[this.current];
+    document.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+    const ok = i === q.c;
+    document.getElementById('qo' + i).classList.add(ok ? 'correct' : 'wrong');
+    if (!ok) document.getElementById('qo' + q.c).classList.add('reveal');
+    const fb = document.getElementById('qfb'); fb.classList.add('show');
+    fb.innerHTML = `<span class="${ok ? 'fb-ok' : 'fb-bad'}">${ok ? 'Correct.' : 'Not quite.'}</span> ${ok ? q.good : q.miss}`;
+    if (this.scores[this.current] === null) {
+      this.scores[this.current] = ok;
+      if (ok) GA.addXP(10);
+    }
+    this.history[this.current] = i;
+    this.updateDots();
+    const nb = document.getElementById('qnext'); if (nb) nb.style.display = 'block';
+    // Auto advance after delay
+    setTimeout(() => this.next(), 2400);
+  }
+
+  next() {
+    this.current++;
+    this.render();
+  }
+
+  prev() {
+    if (this.current === 0) return;
+    this.current--;
+    this.render();
+  }
+
+  jumpTo(i) {
+    const maxReach = Math.max(this.current, ...this.history.map((h, idx) => h !== null ? idx : -1));
+    if (i <= maxReach + 1) { this.current = i; this.render(); }
+  }
+
+  showScore() {
+    const right = this.scores.filter(s => s === true).length;
+    const total = this.quizzes.length;
+    const pct = Math.round(right / total * 100);
+    let msg, sub, color;
+    if (right === total) { msg = 'Perfect score!'; sub = 'Flawless. Every concept is solid. Move forward with confidence.'; color = 'var(--teal)'; }
+    else if (right >= Math.ceil(total * 0.6)) { msg = 'Good work.'; sub = 'Core ideas are there. Review any callouts you\'re unsure about before the next lesson.'; color = 'var(--blue)'; }
+    else { msg = 'Review and retry.'; sub = 'Scroll back through the lesson content and try again. The concepts need one more pass.'; color = 'var(--amber)'; }
+
+    GA.completeLesson(window.LESSON_ID, right, total);
+    if (this.onComplete) this.onComplete(right, total);
+
+    const nextId = window.LESSON_ID + 1;
+    const nextFile = `lesson-${nextId + 1}.html`;
+
+    this.container.innerHTML = `
+      <div class="score-screen">
+        <div class="score-big" style="color:${color}">${right}/${total}</div>
+        <div class="score-pct">${pct}% correct</div>
+        <div class="score-msg">${msg}</div>
+        <div class="score-sub">${sub}</div>
+        <div class="btn-group">
+          ${right < total ? `<button class="btn" onclick="quizEngine.retry()">← Retry</button>` : ''}
+          ${nextId < 13 && right >= Math.ceil(total * 0.6) ? `<a class="btn btn-primary" href="${nextFile}">Lesson ${nextId + 1} →</a>` : ''}
+          <a class="btn" href="index.html">Home</a>
+        </div>
+      </div>`;
+  }
+
+  retry() {
+    this.current = 0;
+    this.scores = new Array(this.quizzes.length).fill(null);
+    this.history = new Array(this.quizzes.length).fill(null);
+    this.answered = false;
+    this.buildDots();
+    this.render();
+  }
+}
+
+let quizEngine;
+
+// ── STEP ENGINE ───────────────────────────────────────────
+class StepEngine {
+  constructor(steps) {
+    this.steps = steps;
+    this.current = 0;
+    this.completed = new Set();
+  }
+
+  show(n) {
+    this.steps.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = i === n ? 'block' : 'none';
+    });
+    this.current = n;
+    if (n > 0) this.completed.add(n - 1);
+    this.updatePips();
+    window.scrollTo(0, 0);
+    // Fire onShow callback after layout so canvases have correct offsetWidth
+    if (typeof window.onStepShow === 'function') {
+      requestAnimationFrame(() => setTimeout(() => window.onStepShow(n), 30));
+    }
+  }
+
+  next() { if (this.current < this.steps.length - 1) this.show(this.current + 1); }
+  prev() { if (this.current > 0) this.show(this.current - 1); }
+
+  updatePips() {
+    document.querySelectorAll('.step-pip').forEach((p, i) => {
+      p.className = 'step-pip' + (i < this.current ? ' done' : i === this.current ? ' active' : '');
+    });
+    const lbl = document.getElementById('step-label');
+    if (lbl) lbl.textContent = `Part ${this.current + 1} of ${this.steps.length}`;
+  }
+}
+
+let stepEngine;
+
+// ── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  GA.load();
+  GA.markStudied();
+  GA.updateXPPill();
+});
+
+</script>
+<script>
+window.LESSON_ID = 4;
+function solveTri(v){
+  const f={'D':{f:'D = S × T',e:'Multiply Speed × Time to get Distance.',c:'#2f81f7'},'S':{f:'S = D ÷ T',e:'Divide Distance by Time to get Speed.',c:'#3fb950'},'T':{f:'T = D ÷ S',e:'Divide Distance by Speed to get Time.',c:'#d29922'}};
+  const info=f[v];
+  ['D','S','T'].forEach(k=>{
+    const btn=document.getElementById('tri-'+k.toLowerCase());
+    btn.style.background=k===v?info.c:'var(--bg3)';
+    btn.style.color=k===v?'#000':'var(--text)';
+    btn.style.borderColor=k===v?info.c:'var(--b2)';
+  });
+  document.getElementById('tri-formula').textContent=info.f;
+  document.getElementById('tri-explain').textContent=info.e;
+}
+function updateHover(){
+  const raw=parseInt(document.getElementById('sl-hmass').value),mass=raw*0.1;
+  document.getElementById('cv-hmass').textContent=mass.toFixed(1)+' kg';
+  document.getElementById('sv-hm').innerHTML=mass.toFixed(1)+'<span class="stat-unit">kg</span>';
+  const ht=(mass*9.8).toFixed(2),hpm=(mass*9.8/4).toFixed(2);
+  document.getElementById('sv-ht').innerHTML=ht+'<span class="stat-unit">N</span>';
+  document.getElementById('sv-hpm').innerHTML=hpm+'<span class="stat-unit">N</span>';
+  document.getElementById('hover-working').innerHTML=`Hover thrust = mass × 9.8<br>= ${mass.toFixed(1)} × 9.8<br>= ${ht} N total<br>÷ 4 motors = ${hpm} N per motor`;
+}
+function updateRange(){
+  const alt=parseInt(document.getElementById('sl-alt').value),gr=parseInt(document.getElementById('sl-gr').value);
+  document.getElementById('cv-alt').textContent=alt+' m';
+  document.getElementById('cv-gr').textContent='1:'+gr;
+  const range=alt*gr;
+  document.getElementById('sv-range').innerHTML=range.toLocaleString()+'<span class="stat-unit">m</span>';
+  document.getElementById('sv-range-km').textContent=(range/1000).toFixed(1)+' km';
+  document.getElementById('range-working').innerHTML=`Range = ${alt} m × ${gr} = ${range.toLocaleString()} m<br><br>Or rearranged: Altitude needed for ${range.toLocaleString()} m range = ${range.toLocaleString()} ÷ ${gr} = ${alt} m`;
+  document.getElementById('range-callout').innerHTML=range>=3000?
+    `<strong>Long-range mission possible.</strong> ${(range/1000).toFixed(1)} km of silent glide range from ${alt} m. This is tactically significant for an ISR platform.`:
+    `<strong>Motor-off range: ${range.toLocaleString()} m.</strong> From ${alt} m altitude at 1:${gr} glide ratio.`;
+}
+const GNOTES=[
+  {q:'From D = S × T, rearranging to find speed gives S = _____ ÷ _____.',hint:'Divide both sides of D=S×T by T.',answer:'S = D ÷ T — divide Distance by Time to get Speed'},
+  {q:'A 0.7 kg glider needs hover thrust of _____ N.',hint:'Thrust = mass × 9.8.',answer:'6.86 N — because 0.7 × 9.8 = 6.86 N'},
+  {q:'You want 4 km range with glide ratio 1:16. You need _____ m of altitude.',hint:'Altitude = range ÷ glide ratio.',answer:'250 m — because 4000 ÷ 16 = 250 m'},
+  {q:'Glide ratio formula rearranged: if you know range and altitude, Glide ratio = _____ ÷ _____.',hint:'The ratio tells you metres forward per metre descended.',answer:'Glide ratio = range ÷ altitude — e.g. 2400 ÷ 200 = 12, so 1:12 ratio'},
+  {q:'A motor is tested and produces 8.5 N at full power. Can it hover a 0.8 kg glider? Show working.',hint:'Calculate required thrust first.',answer:'Yes — required hover thrust = 0.8 × 9.8 = 7.84 N. Motor produces 8.5 N > 7.84 N. Just barely enough.'}
+];
+const QUIZZES=[
+  {q:'Rearranging D = S × T to find Time gives...',opts:['T = D × S','T = S ÷ D','T = D ÷ S','T = D + S'],c:2,good:'T = D ÷ S — divide both sides of D=S×T by S to isolate T.',miss:'D = S × T → divide both sides by S → T = D ÷ S.'},
+  {q:'A glider covers 480 m in 30 seconds. What is its speed?',opts:['14.4 m/s','16 m/s','450 m/s','0.0625 m/s'],c:1,good:'16 m/s — Speed = Distance ÷ Time = 480 ÷ 30 = 16.',miss:'Speed = Distance ÷ Time = 480 ÷ 30 = 16 m/s.'},
+  {q:'Your custom glider weighs 0.9 kg. What total hover thrust do you need from the motor? (g = 9.8)',opts:['0.9 N','8.82 N','9.8 N','88.2 N'],c:1,good:'8.82 N — Thrust = mass × g = 0.9 × 9.8 = 8.82 N.',miss:'Hover thrust = mass × 9.8 = 0.9 × 9.8 = 8.82 N.'},
+  {q:'You want your glider to glide 3.6 km from a motor-off point. Glide ratio is 1:12. What altitude do you need?',opts:['30 m','300 m','432 m','3,600 m'],c:1,good:'300 m — Altitude = range ÷ glide ratio = 3600 ÷ 12 = 300 m.',miss:'Altitude = range ÷ glide ratio = 3600 ÷ 12 = 300 m.'},
+  {q:'A glider starts at 250 m altitude, glides 3,750 m before landing with motor off. What is its glide ratio?',opts:['1:10','1:12','1:15','1:25'],c:2,good:'1:15 — Glide ratio = range ÷ altitude = 3750 ÷ 250 = 15. So the ratio is 1:15.',miss:'Glide ratio = range ÷ altitude = 3750 ÷ 250 = 15. Expressed as 1:15.'}
+];
+function initVisuals(){updateHover();updateRange();}
+window.onStepShow = function(n) {
+  if (n === 1) updateHover();
+  if (n === 2) updateRange();
+};
+document.addEventListener('DOMContentLoaded',()=>{
+  stepEngine=new StepEngine(['step-0','step-1','step-2','step-3','step-4']);
+  document.getElementById('gnotes-container').innerHTML=buildGuidedNotes(4,GNOTES);
+  quizEngine=new QuizEngine(QUIZZES,'quiz-container','quiz-dots');
+  setTimeout(initVisuals,80);
+});
+</script>
+</body>
+</html>

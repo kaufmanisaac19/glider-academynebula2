@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GliderAcademy">
+<meta name="theme-color" content="#0d1117">
+<style>
+/* ── GLIDER ACADEMY — shared.css ── */
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--card:#1c2128;--card2:#252c36;
+  --blue:#2f81f7;--bd:rgba(47,129,247,0.15);--bs:rgba(47,129,247,0.3);
+  --teal:#3fb950;--td:rgba(63,185,80,0.12);
+  --amber:#d29922;--ad:rgba(210,153,34,0.12);
+  --coral:#f85149;--cd:rgba(248,81,73,0.12);
+  --purple:#a371f7;--pd:rgba(163,113,247,0.12);
+  --text:#e6edf3;--t2:#8b949e;--t3:#484f58;
+  --border:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);
+  --r:12px;--rs:8px;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{padding-bottom:24px}
+
+/* HEADER */
+.app-header{padding:calc(var(--st)+10px) 14px 10px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+.back-link{color:var(--blue);font-size:15px;text-decoration:none;white-space:nowrap;padding:4px 0}
+.header-info{flex:1;min-width:0}
+.header-title{font-size:16px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-sub{font-size:11px;color:var(--t3);margin-top:1px}
+.xp-pill{font-size:12px;background:var(--bd);color:var(--blue);border:1px solid var(--bs);padding:3px 10px;border-radius:99px;font-weight:600;white-space:nowrap}
+
+/* PROGRESS STEPS */
+.step-bar{display:flex;gap:4px;padding:12px 14px 0}
+.step-pip{flex:1;height:4px;border-radius:2px;background:var(--bg3);transition:background .3s;cursor:pointer}
+.step-pip.done{background:var(--teal)}
+.step-pip.active{background:var(--blue);opacity:.6}
+.step-label{font-size:12px;color:var(--t2);padding:6px 14px 14px;font-weight:500}
+
+/* CONTENT */
+.lesson-content{padding:16px 14px}
+.big-idea{font-size:20px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:12px}
+.body-text{font-size:15px;color:var(--t2);line-height:1.8;margin-bottom:12px}
+.body-text strong{color:var(--text);font-weight:600}
+
+/* CALLOUTS */
+.callout{border-left:3px solid var(--blue);background:var(--bd);border-radius:0 var(--rs) var(--rs) 0;padding:11px 13px;margin:12px 0;font-size:14px;color:var(--t2);line-height:1.7}
+.callout strong{color:var(--text);font-weight:600}
+.callout.teal{border-left-color:var(--teal);background:var(--td)}
+.callout.amber{border-left-color:var(--amber);background:var(--ad)}
+.callout.coral{border-left-color:var(--coral);background:var(--cd)}
+.callout.purple{border-left-color:var(--purple);background:var(--pd)}
+
+/* SECTION LABELS */
+.sec-label{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);padding:16px 14px 8px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin:0 12px 12px;overflow:hidden}
+.card-pad{padding:13px 14px}
+
+/* INTERACTIVE CANVAS */
+.vis-wrap{margin:0 12px 12px}
+.vis-canvas{width:100%;border-radius:var(--rs);border:1px solid var(--border);display:block;background:var(--bg3)}
+
+/* CONTROLS */
+.ctrl-group{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;margin:0 12px 12px}
+.ctrl-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ctrl-row:last-child{margin-bottom:0}
+.ctrl-label{font-size:13px;color:var(--t2);min-width:100px;flex-shrink:0}
+.ctrl-val{font-size:13px;font-weight:700;min-width:58px;text-align:right;color:var(--text)}
+input[type=range]{-webkit-appearance:none;flex:1;height:4px;border-radius:2px;background:var(--bg3);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--blue);cursor:pointer;border:2px solid var(--bg)}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 12px;margin-bottom:12px}
+.stat-row.two{grid-template-columns:repeat(2,1fr)}
+.stat{background:var(--bg3);border-radius:var(--rs);padding:10px 8px;text-align:center}
+.stat-label{font-size:10px;color:var(--t3);margin-bottom:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.stat-val{font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.stat-unit{font-size:10px;color:var(--t2);margin-left:2px}
+
+/* MODE BUTTONS */
+.mode-btns{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px;margin-bottom:12px}
+.mode-btn{font-size:12px;padding:6px 12px;border-radius:99px;border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.mode-btn.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* GUIDED NOTES */
+.gnote-wrap{background:rgba(210,153,34,0.06);border:1px solid rgba(210,153,34,0.2);border-radius:var(--r);padding:14px;margin:0 12px 12px}
+.gnote-header{font-size:12px;font-weight:700;color:var(--amber);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.gnote-item{margin-bottom:14px}
+.gnote-item:last-child{margin-bottom:0}
+.gnote-q{font-size:14px;color:var(--text);line-height:1.55;margin-bottom:6px}
+.gnote-hint{font-size:12px;color:var(--t3);margin-bottom:6px;font-style:italic}
+.gnote-input{width:100%;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.gnote-input:focus{border-color:var(--amber)}
+.gnote-input.has-value{border-color:rgba(210,153,34,0.4)}
+.gnote-reveal{font-size:12px;color:var(--amber);background:none;border:1px solid rgba(210,153,34,0.3);border-radius:99px;padding:3px 10px;cursor:pointer;margin-top:5px}
+.gnote-answer{font-size:13px;color:var(--teal);background:var(--td);border-radius:var(--rs);padding:9px 11px;margin-top:6px;line-height:1.6;display:none}
+
+/* QUIZ */
+.quiz-wrap{padding:0 12px 12px}
+.quiz-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.quiz-num{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.05em}
+.quiz-score{font-size:11px;color:var(--teal);font-weight:600}
+.quiz-q{font-size:15px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:12px}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{font-size:14px;padding:11px 13px;border:1px solid var(--b2);border-radius:var(--rs);background:transparent;color:var(--text);cursor:pointer;text-align:left;transition:background .1s;line-height:1.4}
+.quiz-opt:active{background:var(--bg3)}
+.quiz-opt.correct{background:var(--td);border-color:var(--teal);color:#3fb950;font-weight:500}
+.quiz-opt.wrong{background:var(--cd);border-color:var(--coral);color:#f85149}
+.quiz-opt.reveal{background:var(--td);border-color:var(--teal);color:#3fb950}
+.quiz-feedback{font-size:13px;color:var(--t2);margin-top:10px;line-height:1.65;display:none;padding:10px 11px;background:var(--bg3);border-radius:var(--rs)}
+.quiz-feedback.show{display:block}
+.fb-ok{color:var(--teal);font-weight:700}.fb-bad{color:var(--coral);font-weight:700}
+.quiz-dots{display:flex;gap:5px;padding:0 12px;margin-bottom:8px}
+.quiz-dot{width:9px;height:9px;border-radius:50%;background:var(--bg3);cursor:pointer;transition:transform .1s}
+.quiz-dot:active{transform:scale(1.4)}
+.quiz-dot.right{background:var(--teal)}.quiz-dot.wrong{background:var(--coral)}.quiz-dot.current{background:var(--blue)}
+.quiz-nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px}
+.quiz-nav-btn{font-size:13px;padding:8px 16px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;white-space:nowrap}
+.quiz-nav-btn:disabled{opacity:.25;cursor:default}
+.quiz-nav-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* SCORE SCREEN */
+.score-screen{text-align:center;padding:32px 20px}
+.score-big{font-size:64px;font-weight:800;color:var(--text);line-height:1}
+.score-pct{font-size:15px;color:var(--t2);margin:4px 0 16px}
+.score-msg{font-size:18px;font-weight:700;margin-bottom:6px}
+.score-sub{font-size:14px;color:var(--t2);line-height:1.65;margin-bottom:24px;max-width:320px;margin-left:auto;margin-right:auto}
+.btn-group{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.btn{font-size:14px;font-weight:500;padding:11px 20px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--text);cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-teal{background:var(--teal);color:#000;border-color:var(--teal)}
+
+/* STEP NAV */
+.step-nav{display:flex;gap:8px;padding:8px 12px 16px;position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border)}
+.step-nav .btn{flex:1}
+
+/* BADGES */
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
+
+/* TOAST */
+@keyframes toast-up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+.toast{position:fixed;top:64px;right:14px;padding:6px 14px;border-radius:99px;font-weight:700;font-size:13px;z-index:999;pointer-events:none;animation:toast-up 1s ease forwards}
+
+/* UTIL */
+.text-center{text-align:center}
+.mt-8{margin-top:8px}
+.mb-0{margin-bottom:0}
+
+</style>
+<title>Glider Engineering Academy</title>
+<style>
+.hero{padding:22px 14px 18px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.hero h1{font-size:24px;font-weight:800;margin-bottom:5px}
+.hero p{font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:16px}
+.stat-hero{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sh{background:var(--bg3);border-radius:var(--rs);padding:12px 8px;text-align:center}
+.sh-n{font-size:26px;font-weight:800;color:var(--blue)}
+.sh-l{font-size:10px;color:var(--t3);margin-top:2px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.lesson-row{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;text-decoration:none;color:inherit}
+.lesson-row:active{background:var(--bg3)}
+.lesson-row:last-child{border-bottom:none}
+.l-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.l-done{background:var(--teal);color:#000}
+.l-avail{background:var(--blue);color:#fff}
+.l-locked{background:var(--bg3);color:var(--t3)}
+.l-info{flex:1;min-width:0}
+.l-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.l-sub{font-size:12px;color:var(--t2)}
+.l-badge{font-size:11px;padding:3px 9px;border-radius:99px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.phase-header{padding:16px 14px 4px;background:var(--bg2);border-bottom:1px solid var(--border);border-top:1px solid var(--border);margin-top:16px}
+.phase-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.phase-sub{font-size:12px;color:var(--t2)}
+.pb-wrap{height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-top:8px}
+.pb-fill{height:100%;background:var(--teal);border-radius:2px;transition:width .5s}
+.next-card{background:var(--card);border:1px solid var(--bs);border-radius:var(--r);margin:0 12px 12px;padding:14px;cursor:pointer;transition:background .12s;text-decoration:none;display:flex;align-items:center;gap:12px}
+.next-card:active{background:var(--bg3)}
+.next-arrow{margin-left:auto;font-size:22px;color:var(--blue)}
+.roadmap-pill{display:inline-block;font-size:12px;padding:4px 11px;border-radius:99px;font-weight:600;margin-top:6px}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="header-info">
+    <div class="header-title">✈ Glider Engineering Academy</div>
+    <div class="header-sub">Fixed-wing from first principles to autonomous flight</div>
+  </div>
+  <div class="xp-pill" id="xp-pill">0 XP</div>
+</div>
+
+<div class="hero">
+  <h1>Your academy.</h1>
+  <p>Learn engineering by building. Physics → Aerodynamics → Electronics → Autonomous glider.</p>
+  <div class="stat-hero">
+    <div class="sh"><div class="sh-n" id="stat-done">0</div><div class="sh-l">Done</div></div>
+    <div class="sh"><div class="sh-n" id="stat-xp">0</div><div class="sh-l">XP</div></div>
+    <div class="sh"><div class="sh-n" id="stat-streak">0</div><div class="sh-l">Streak</div></div>
+  </div>
+</div>
+
+<div class="sec-label">Continue</div>
+<a class="next-card" id="next-card" href="#">
+  <div class="l-num l-avail" id="next-num">4</div>
+  <div>
+    <div style="font-size:15px;font-weight:600;color:var(--text)" id="next-title">Loading...</div>
+    <div style="font-size:12px;color:var(--t2)" id="next-sub">Tap to start</div>
+  </div>
+  <div class="next-arrow">›</div>
+</a>
+
+<div id="lesson-list"></div>
+
+<div class="sec-label">Your 8-month roadmap</div>
+<div class="card card-pad" style="margin-bottom:24px">
+  <div style="font-size:13px;color:var(--t2);line-height:1.7">
+    <div style="margin-bottom:6px"><span style="color:var(--blue);font-weight:600">Month 3</span> — Order Volantex Ranger 600 RTF (~$65). First flight.</div>
+    <div style="margin-bottom:6px"><span style="color:var(--amber);font-weight:600">Month 5</span> — Buy autopilot kit (~$102). Install into Ranger 600.</div>
+    <div style="margin-bottom:6px"><span style="color:var(--teal);font-weight:600">Month 7</span> — First autonomous GPS waypoint mission.</div>
+    <div><span style="color:var(--coral);font-weight:600">Month 8–9</span> — Operational. Tune, iterate, build toward your mission concept.</div>
+  </div>
+</div>
+
+<script>
+// ── GLIDER ACADEMY — shared.js ──
+const GA_KEY = 'glider_academy_v5';
+
+const GA = {
+  // ── STATE ──────────────────────────────────────────────
+  state: {
+    xp: 0, streak: 0, lastStudy: null,
+    done: [0,1,2],
+    notes: {},       // { lessonId: { 'gn0': 'answer', ... } }
+    quizBest: {}     // { lessonId: score }
+  },
+
+  // ── STORAGE ────────────────────────────────────────────
+  save() {
+    try { localStorage.setItem(GA_KEY, JSON.stringify(this.state)); } catch(e) {}
+  },
+
+  load() {
+    try {
+      const raw = localStorage.getItem(GA_KEY);
+      if (raw) {
+        const p = JSON.parse(raw);
+        if (Array.isArray(p.done)) this.state.done = p.done;
+        if (typeof p.xp === 'number') this.state.xp = p.xp;
+        if (typeof p.streak === 'number') this.state.streak = p.streak;
+        if (p.lastStudy) this.state.lastStudy = p.lastStudy;
+        if (p.notes && typeof p.notes === 'object') this.state.notes = p.notes;
+        if (p.quizBest && typeof p.quizBest === 'object') this.state.quizBest = p.quizBest;
+      }
+    } catch(e) {}
+    // Always ensure first 3 lessons marked done
+    [0,1,2].forEach(i => { if (!this.state.done.includes(i)) this.state.done.push(i); });
+  },
+
+  // ── XP & STREAK ────────────────────────────────────────
+  addXP(n) {
+    this.state.xp += n;
+    this.save();
+    this.showToast('+' + n + ' XP', '#3fb950', '#000');
+    this.updateXPPill();
+  },
+
+  markStudied() {
+    const td = new Date().toDateString();
+    const yd = new Date(Date.now() - 86400000).toDateString();
+    if (this.state.lastStudy !== td) {
+      this.state.streak = this.state.lastStudy === yd ? this.state.streak + 1 : 1;
+      this.state.lastStudy = td;
+      this.save();
+    }
+  },
+
+  completeLesson(id, score, total) {
+    const isNew = !this.state.done.includes(id);
+    if (isNew && score >= Math.ceil(total * 0.6)) {
+      this.state.done.push(id);
+      this.state.quizBest[id] = score;
+      this.save();
+      this.addXP(50);
+      return true;
+    }
+    if (score > (this.state.quizBest[id] || 0)) {
+      this.state.quizBest[id] = score;
+      this.save();
+    }
+    return isNew && score >= Math.ceil(total * 0.6);
+  },
+
+  // ── NOTES ──────────────────────────────────────────────
+  saveNote(lessonId, key, val) {
+    if (!this.state.notes[lessonId]) this.state.notes[lessonId] = {};
+    this.state.notes[lessonId][key] = val;
+    this.save();
+  },
+
+  getNote(lessonId, key) {
+    return (this.state.notes[lessonId] || {})[key] || '';
+  },
+
+  // ── UI HELPERS ─────────────────────────────────────────
+  showToast(text, bg, color) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = text;
+    el.style.background = bg || 'var(--teal)';
+    el.style.color = color || '#000';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1050);
+  },
+
+  updateXPPill() {
+    const el = document.getElementById('xp-pill');
+    if (el) el.textContent = this.state.xp + ' XP';
+  },
+
+  isAvailable(id) {
+    return this.state.done.includes(id) || id === 0 ||
+      this.state.done.includes(id - 1) ||
+      id <= Math.max(-1, ...this.state.done) + 1;
+  }
+};
+
+// ── GUIDED NOTES COMPONENT ────────────────────────────────
+function buildGuidedNotes(lessonId, notes) {
+  const saved = GA.state.notes[lessonId] || {};
+  let html = `<div class="gnote-wrap">
+    <div class="gnote-header">✏️ Guided notes — fill in as you read</div>`;
+  notes.forEach((n, i) => {
+    const val = saved['gn' + i] || '';
+    html += `<div class="gnote-item">
+      <div class="gnote-q">${n.q}</div>
+      <div class="gnote-hint">Hint: ${n.hint}</div>
+      <input type="text" class="gnote-input${val ? ' has-value' : ''}" id="gn-${i}"
+        value="${escHTML(val)}" placeholder="Your answer..."
+        oninput="onGNote(${i},this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div style="display:flex;align-items:center;gap:8px;margin-top:5px">
+        <button class="gnote-reveal" onclick="toggleAnswer(${i})">Show answer</button>
+        <span id="gns-${i}" style="font-size:11px;color:var(--t3);opacity:0;transition:opacity .3s">Saved ✓</span>
+      </div>
+      <div class="gnote-answer" id="gna-${i}">${n.answer}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function onGNote(i, val) {
+  const inp = document.getElementById('gn-' + i);
+  if (inp) inp.classList.toggle('has-value', val.length > 0);
+  GA.saveNote(window.LESSON_ID, 'gn' + i, val);
+  const ns = document.getElementById('gns-' + i);
+  if (ns) { ns.style.opacity = '1'; setTimeout(() => ns.style.opacity = '0', 1400); }
+}
+
+function toggleAnswer(i) {
+  const el = document.getElementById('gna-' + i);
+  if (el) el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function escHTML(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── QUIZ ENGINE ───────────────────────────────────────────
+class QuizEngine {
+  constructor(quizzes, containerId, dotsId) {
+    this.quizzes = quizzes;
+    this.container = document.getElementById(containerId);
+    this.dotsEl = document.getElementById(dotsId);
+    this.current = 0;
+    this.scores = new Array(quizzes.length).fill(null);
+    this.history = new Array(quizzes.length).fill(null);
+    this.answered = false;
+    this.onComplete = null;
+    this.buildDots();
+    this.render();
+  }
+
+  buildDots() {
+    if (!this.dotsEl) return;
+    this.dotsEl.innerHTML = this.quizzes.map((_, i) =>
+      `<div class="quiz-dot" id="qd${i}" onclick="quizEngine.jumpTo(${i})"></div>`
+    ).join('');
+    this.updateDots();
+  }
+
+  updateDots() {
+    this.quizzes.forEach((_, i) => {
+      const d = document.getElementById('qd' + i);
+      if (!d) return;
+      if (this.scores[i] === true) d.className = 'quiz-dot right';
+      else if (this.scores[i] === false) d.className = 'quiz-dot wrong';
+      else if (i === this.current) d.className = 'quiz-dot current';
+      else d.className = 'quiz-dot';
+    });
+  }
+
+  render() {
+    if (!this.container) return;
+    if (this.current >= this.quizzes.length) { this.showScore(); return; }
+    const q = this.quizzes[this.current];
+    const alreadyAnswered = this.history[this.current] !== null;
+    const rightSoFar = this.scores.filter(s => s === true).length;
+    this.answered = alreadyAnswered;
+
+    this.container.innerHTML = `
+      <div class="quiz-block">
+        <div class="quiz-meta">
+          <span class="quiz-num">Q${this.current + 1} / ${this.quizzes.length}</span>
+          <span class="quiz-score">${rightSoFar} correct</span>
+        </div>
+        <div class="quiz-q">${q.q}</div>
+        <div class="quiz-opts">
+          ${q.opts.map((o, i) => `<button class="quiz-opt" id="qo${i}" onclick="quizEngine.answer(${i})">${o}</button>`).join('')}
+        </div>
+        <div class="quiz-feedback" id="qfb"></div>
+        <div class="quiz-nav-row">
+          <button class="quiz-nav-btn" ${this.current === 0 ? 'disabled' : ''} onclick="quizEngine.prev()">← Back</button>
+          <span style="font-size:12px;color:var(--t3)">${this.current + 1} of ${this.quizzes.length}</span>
+          <button class="quiz-nav-btn primary" id="qnext" style="display:none" onclick="quizEngine.next()">Next →</button>
+        </div>
+      </div>`;
+
+    // Restore previously answered state
+    if (alreadyAnswered) {
+      const prev = this.history[this.current];
+      document.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+      document.getElementById('qo' + prev).classList.add(prev === q.c ? 'correct' : 'wrong');
+      if (prev !== q.c) document.getElementById('qo' + q.c).classList.add('reveal');
+      const fb = document.getElementById('qfb'); fb.classList.add('show');
+      fb.innerHTML = `<span class="${prev === q.c ? 'fb-ok' : 'fb-bad'}">${prev === q.c ? 'Correct.' : 'Not quite.'}</span> ${prev === q.c ? q.good : q.miss}`;
+      const nb = document.getElementById('qnext'); if (nb) nb.style.display = 'block';
+    }
+    this.updateDots();
+  }
+
+  answer(i) {
+    if (this.answered) return;
+    this.answered = true;
+    const q = this.quizzes[this.current];
+    document.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+    const ok = i === q.c;
+    document.getElementById('qo' + i).classList.add(ok ? 'correct' : 'wrong');
+    if (!ok) document.getElementById('qo' + q.c).classList.add('reveal');
+    const fb = document.getElementById('qfb'); fb.classList.add('show');
+    fb.innerHTML = `<span class="${ok ? 'fb-ok' : 'fb-bad'}">${ok ? 'Correct.' : 'Not quite.'}</span> ${ok ? q.good : q.miss}`;
+    if (this.scores[this.current] === null) {
+      this.scores[this.current] = ok;
+      if (ok) GA.addXP(10);
+    }
+    this.history[this.current] = i;
+    this.updateDots();
+    const nb = document.getElementById('qnext'); if (nb) nb.style.display = 'block';
+    // Auto advance after delay
+    setTimeout(() => this.next(), 2400);
+  }
+
+  next() {
+    this.current++;
+    this.render();
+  }
+
+  prev() {
+    if (this.current === 0) return;
+    this.current--;
+    this.render();
+  }
+
+  jumpTo(i) {
+    const maxReach = Math.max(this.current, ...this.history.map((h, idx) => h !== null ? idx : -1));
+    if (i <= maxReach + 1) { this.current = i; this.render(); }
+  }
+
+  showScore() {
+    const right = this.scores.filter(s => s === true).length;
+    const total = this.quizzes.length;
+    const pct = Math.round(right / total * 100);
+    let msg, sub, color;
+    if (right === total) { msg = 'Perfect score!'; sub = 'Flawless. Every concept is solid. Move forward with confidence.'; color = 'var(--teal)'; }
+    else if (right >= Math.ceil(total * 0.6)) { msg = 'Good work.'; sub = 'Core ideas are there. Review any callouts you\'re unsure about before the next lesson.'; color = 'var(--blue)'; }
+    else { msg = 'Review and retry.'; sub = 'Scroll back through the lesson content and try again. The concepts need one more pass.'; color = 'var(--amber)'; }
+
+    GA.completeLesson(window.LESSON_ID, right, total);
+    if (this.onComplete) this.onComplete(right, total);
+
+    const nextId = window.LESSON_ID + 1;
+    const nextFile = `lesson-${nextId + 1}.html`;
+
+    this.container.innerHTML = `
+      <div class="score-screen">
+        <div class="score-big" style="color:${color}">${right}/${total}</div>
+        <div class="score-pct">${pct}% correct</div>
+        <div class="score-msg">${msg}</div>
+        <div class="score-sub">${sub}</div>
+        <div class="btn-group">
+          ${right < total ? `<button class="btn" onclick="quizEngine.retry()">← Retry</button>` : ''}
+          ${nextId < 13 && right >= Math.ceil(total * 0.6) ? `<a class="btn btn-primary" href="${nextFile}">Lesson ${nextId + 1} →</a>` : ''}
+          <a class="btn" href="index.html">Home</a>
+        </div>
+      </div>`;
+  }
+
+  retry() {
+    this.current = 0;
+    this.scores = new Array(this.quizzes.length).fill(null);
+    this.history = new Array(this.quizzes.length).fill(null);
+    this.answered = false;
+    this.buildDots();
+    this.render();
+  }
+}
+
+let quizEngine;
+
+// ── STEP ENGINE ───────────────────────────────────────────
+class StepEngine {
+  constructor(steps) {
+    this.steps = steps;
+    this.current = 0;
+    this.completed = new Set();
+  }
+
+  show(n) {
+    this.steps.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = i === n ? 'block' : 'none';
+    });
+    this.current = n;
+    if (n > 0) this.completed.add(n - 1);
+    this.updatePips();
+    window.scrollTo(0, 0);
+    // Fire onShow callback after layout so canvases have correct offsetWidth
+    if (typeof window.onStepShow === 'function') {
+      requestAnimationFrame(() => setTimeout(() => window.onStepShow(n), 30));
+    }
+  }
+
+  next() { if (this.current < this.steps.length - 1) this.show(this.current + 1); }
+  prev() { if (this.current > 0) this.show(this.current - 1); }
+
+  updatePips() {
+    document.querySelectorAll('.step-pip').forEach((p, i) => {
+      p.className = 'step-pip' + (i < this.current ? ' done' : i === this.current ? ' active' : '');
+    });
+    const lbl = document.getElementById('step-label');
+    if (lbl) lbl.textContent = `Part ${this.current + 1} of ${this.steps.length}`;
+  }
+}
+
+let stepEngine;
+
+// ── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  GA.load();
+  GA.markStudied();
+  GA.updateXPPill();
+});
+
+</script>
+<script>
+const LESSONS = [
+  {title:'Speed, distance & time', sub:'Foundation of all motion', tag:'Physics', file:'lesson-1.html'},
+  {title:'Forces, gravity & thrust', sub:'What makes things move', tag:'Physics', file:'lesson-2.html'},
+  {title:'Acceleration & the glide', sub:'The fixed-wing superpower', tag:'Physics', file:'lesson-3.html'},
+  {title:'Reading motion graphs', sub:'Position, speed & acceleration', tag:'Physics', file:'lesson-4.html'},
+  {title:'Algebra basics', sub:'Rearranging formulas for engineers', tag:'Math', file:'lesson-5.html'},
+  {title:'Glide ratio in depth', sub:'The most important number', tag:'Applied', file:'lesson-6.html'},
+  {title:'How a wing generates lift', sub:'Airfoil, pressure, angle of attack', tag:'Aero', file:'lesson-7.html'},
+  {title:'Drag — the enemy of range', sub:'Types and how to minimise', tag:'Aero', file:'lesson-8.html'},
+  {title:'Aspect ratio & wing design', sub:'Why long thin wings glide further', tag:'Aero', file:'lesson-9.html'},
+  {title:'Brushless motors & ESCs', sub:'Your power system', tag:'Electronics', file:'lesson-10.html'},
+  {title:'Servos & control surfaces', sub:'How the autopilot steers', tag:'Electronics', file:'lesson-11.html'},
+  {title:'GPS & sensors', sub:'How the glider knows where it is', tag:'Electronics', file:'lesson-12.html'},
+  {title:'ArduPlane & autonomous flight', sub:'Your aircraft brain', tag:'Autonomy', file:'lesson-13.html'},
+];
+
+const TAG_COLORS = {Physics:'#2f81f7',Math:'#d29922',Applied:'#3fb950',Aero:'#3fb950',Electronics:'#a371f7',Autonomy:'#f85149'};
+const PHASES = [
+  {name:'Phase 1 — Foundations', sub:'Months 1–2', range:[0,5]},
+  {name:'Phase 2 — Aerodynamics', sub:'Month 2–3', range:[6,8]},
+  {name:'Phase 3 — Electronics & Build', sub:'Months 3–7', range:[9,12]},
+];
+
+function buildList() {
+  const container = document.getElementById('lesson-list');
+  let html = '';
+  PHASES.forEach(ph => {
+    const lessons = LESSONS.slice(ph.range[0], ph.range[1]+1);
+    const doneInPhase = lessons.filter((_,i) => GA.state.done.includes(ph.range[0]+i)).length;
+    const pct = Math.round(doneInPhase / lessons.length * 100);
+    html += `<div class="phase-header">
+      <div class="phase-name">${ph.name}</div>
+      <div class="phase-sub">${ph.sub} · ${doneInPhase}/${lessons.length} complete</div>
+      <div class="pb-wrap"><div class="pb-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="card" style="margin-top:0;border-radius:0 0 var(--r) var(--r)">`;
+    lessons.forEach((l, li) => {
+      const id = ph.range[0] + li;
+      const done = GA.state.done.includes(id);
+      const avail = GA.isAvailable(id);
+      const nc = done ? 'l-done' : avail ? 'l-avail' : 'l-locked';
+      const bs = done ? 'Done' : avail ? 'Start' : 'Locked';
+      const bc = done ? 'background:var(--td);color:var(--teal)' : avail ? 'background:var(--bd);color:var(--blue)' : 'background:var(--bg3);color:var(--t3)';
+      const tc = TAG_COLORS[l.tag] || 'var(--blue)';
+      html += `<a class="lesson-row${!avail?' lesson-locked':''}" href="${avail ? l.file : '#'}" style="${!avail?'opacity:.4;pointer-events:none':''}">
+        <div class="l-num ${nc}">${id+1}</div>
+        <div class="l-info">
+          <div class="l-title">${l.title}</div>
+          <div class="l-sub">${l.sub}</div>
+        </div>
+        <div class="l-badge" style="${bc}">${bs}</div>
+      </a>`;
+    });
+    html += `</div>`;
+  });
+  container.innerHTML = html;
+}
+
+function updateHome() {
+  document.getElementById('stat-done').textContent = GA.state.done.length;
+  document.getElementById('stat-xp').textContent = GA.state.xp;
+  document.getElementById('stat-streak').textContent = GA.state.streak;
+  // Next lesson
+  let next = 0;
+  for (let i = 0; i < LESSONS.length; i++) { if (!GA.state.done.includes(i)) { next = i; break; } }
+  const l = LESSONS[next];
+  document.getElementById('next-num').textContent = next + 1;
+  document.getElementById('next-title').textContent = l.title;
+  document.getElementById('next-sub').textContent = l.tag + ' · Lesson ' + (next+1);
+  document.getElementById('next-card').href = l.file;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateHome();
+  buildList();
+});
+</script>
+</body>
+</html>

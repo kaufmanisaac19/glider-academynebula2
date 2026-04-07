@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1117">
+<style>
+/* ── GLIDER ACADEMY — shared.css ── */
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--card:#1c2128;--card2:#252c36;
+  --blue:#2f81f7;--bd:rgba(47,129,247,0.15);--bs:rgba(47,129,247,0.3);
+  --teal:#3fb950;--td:rgba(63,185,80,0.12);
+  --amber:#d29922;--ad:rgba(210,153,34,0.12);
+  --coral:#f85149;--cd:rgba(248,81,73,0.12);
+  --purple:#a371f7;--pd:rgba(163,113,247,0.12);
+  --text:#e6edf3;--t2:#8b949e;--t3:#484f58;
+  --border:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);
+  --r:12px;--rs:8px;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{padding-bottom:24px}
+
+/* HEADER */
+.app-header{padding:calc(var(--st)+10px) 14px 10px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+.back-link{color:var(--blue);font-size:15px;text-decoration:none;white-space:nowrap;padding:4px 0}
+.header-info{flex:1;min-width:0}
+.header-title{font-size:16px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-sub{font-size:11px;color:var(--t3);margin-top:1px}
+.xp-pill{font-size:12px;background:var(--bd);color:var(--blue);border:1px solid var(--bs);padding:3px 10px;border-radius:99px;font-weight:600;white-space:nowrap}
+
+/* PROGRESS STEPS */
+.step-bar{display:flex;gap:4px;padding:12px 14px 0}
+.step-pip{flex:1;height:4px;border-radius:2px;background:var(--bg3);transition:background .3s;cursor:pointer}
+.step-pip.done{background:var(--teal)}
+.step-pip.active{background:var(--blue);opacity:.6}
+.step-label{font-size:12px;color:var(--t2);padding:6px 14px 14px;font-weight:500}
+
+/* CONTENT */
+.lesson-content{padding:16px 14px}
+.big-idea{font-size:20px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:12px}
+.body-text{font-size:15px;color:var(--t2);line-height:1.8;margin-bottom:12px}
+.body-text strong{color:var(--text);font-weight:600}
+
+/* CALLOUTS */
+.callout{border-left:3px solid var(--blue);background:var(--bd);border-radius:0 var(--rs) var(--rs) 0;padding:11px 13px;margin:12px 0;font-size:14px;color:var(--t2);line-height:1.7}
+.callout strong{color:var(--text);font-weight:600}
+.callout.teal{border-left-color:var(--teal);background:var(--td)}
+.callout.amber{border-left-color:var(--amber);background:var(--ad)}
+.callout.coral{border-left-color:var(--coral);background:var(--cd)}
+.callout.purple{border-left-color:var(--purple);background:var(--pd)}
+
+/* SECTION LABELS */
+.sec-label{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);padding:16px 14px 8px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin:0 12px 12px;overflow:hidden}
+.card-pad{padding:13px 14px}
+
+/* INTERACTIVE CANVAS */
+.vis-wrap{margin:0 12px 12px}
+.vis-canvas{width:100%;border-radius:var(--rs);border:1px solid var(--border);display:block;background:var(--bg3)}
+
+/* CONTROLS */
+.ctrl-group{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;margin:0 12px 12px}
+.ctrl-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ctrl-row:last-child{margin-bottom:0}
+.ctrl-label{font-size:13px;color:var(--t2);min-width:100px;flex-shrink:0}
+.ctrl-val{font-size:13px;font-weight:700;min-width:58px;text-align:right;color:var(--text)}
+input[type=range]{-webkit-appearance:none;flex:1;height:4px;border-radius:2px;background:var(--bg3);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--blue);cursor:pointer;border:2px solid var(--bg)}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 12px;margin-bottom:12px}
+.stat-row.two{grid-template-columns:repeat(2,1fr)}
+.stat{background:var(--bg3);border-radius:var(--rs);padding:10px 8px;text-align:center}
+.stat-label{font-size:10px;color:var(--t3);margin-bottom:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.stat-val{font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.stat-unit{font-size:10px;color:var(--t2);margin-left:2px}
+
+/* MODE BUTTONS */
+.mode-btns{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px;margin-bottom:12px}
+.mode-btn{font-size:12px;padding:6px 12px;border-radius:99px;border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.mode-btn.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* GUIDED NOTES */
+.gnote-wrap{background:rgba(210,153,34,0.06);border:1px solid rgba(210,153,34,0.2);border-radius:var(--r);padding:14px;margin:0 12px 12px}
+.gnote-header{font-size:12px;font-weight:700;color:var(--amber);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.gnote-item{margin-bottom:14px}
+.gnote-item:last-child{margin-bottom:0}
+.gnote-q{font-size:14px;color:var(--text);line-height:1.55;margin-bottom:6px}
+.gnote-hint{font-size:12px;color:var(--t3);margin-bottom:6px;font-style:italic}
+.gnote-input{width:100%;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.gnote-input:focus{border-color:var(--amber)}
+.gnote-input.has-value{border-color:rgba(210,153,34,0.4)}
+.gnote-reveal{font-size:12px;color:var(--amber);background:none;border:1px solid rgba(210,153,34,0.3);border-radius:99px;padding:3px 10px;cursor:pointer;margin-top:5px}
+.gnote-answer{font-size:13px;color:var(--teal);background:var(--td);border-radius:var(--rs);padding:9px 11px;margin-top:6px;line-height:1.6;display:none}
+
+/* QUIZ */
+.quiz-wrap{padding:0 12px 12px}
+.quiz-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.quiz-num{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.05em}
+.quiz-score{font-size:11px;color:var(--teal);font-weight:600}
+.quiz-q{font-size:15px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:12px}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{font-size:14px;padding:11px 13px;border:1px solid var(--b2);border-radius:var(--rs);background:transparent;color:var(--text);cursor:pointer;text-align:left;transition:background .1s;line-height:1.4}
+.quiz-opt:active{background:var(--bg3)}
+.quiz-opt.correct{background:var(--td);border-color:var(--teal);color:#3fb950;font-weight:500}
+.quiz-opt.wrong{background:var(--cd);border-color:var(--coral);color:#f85149}
+.quiz-opt.reveal{background:var(--td);border-color:var(--teal);color:#3fb950}
+.quiz-feedback{font-size:13px;color:var(--t2);margin-top:10px;line-height:1.65;display:none;padding:10px 11px;background:var(--bg3);border-radius:var(--rs)}
+.quiz-feedback.show{display:block}
+.fb-ok{color:var(--teal);font-weight:700}.fb-bad{color:var(--coral);font-weight:700}
+.quiz-dots{display:flex;gap:5px;padding:0 12px;margin-bottom:8px}
+.quiz-dot{width:9px;height:9px;border-radius:50%;background:var(--bg3);cursor:pointer;transition:transform .1s}
+.quiz-dot:active{transform:scale(1.4)}
+.quiz-dot.right{background:var(--teal)}.quiz-dot.wrong{background:var(--coral)}.quiz-dot.current{background:var(--blue)}
+.quiz-nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px}
+.quiz-nav-btn{font-size:13px;padding:8px 16px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;white-space:nowrap}
+.quiz-nav-btn:disabled{opacity:.25;cursor:default}
+.quiz-nav-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* SCORE SCREEN */
+.score-screen{text-align:center;padding:32px 20px}
+.score-big{font-size:64px;font-weight:800;color:var(--text);line-height:1}
+.score-pct{font-size:15px;color:var(--t2);margin:4px 0 16px}
+.score-msg{font-size:18px;font-weight:700;margin-bottom:6px}
+.score-sub{font-size:14px;color:var(--t2);line-height:1.65;margin-bottom:24px;max-width:320px;margin-left:auto;margin-right:auto}
+.btn-group{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.btn{font-size:14px;font-weight:500;padding:11px 20px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--text);cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-teal{background:var(--teal);color:#000;border-color:var(--teal)}
+
+/* STEP NAV */
+.step-nav{display:flex;gap:8px;padding:8px 12px 16px;position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border)}
+.step-nav .btn{flex:1}
+
+/* BADGES */
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
+
+/* TOAST */
+@keyframes toast-up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+.toast{position:fixed;top:64px;right:14px;padding:6px 14px;border-radius:99px;font-weight:700;font-size:13px;z-index:999;pointer-events:none;animation:toast-up 1s ease forwards}
+
+/* UTIL */
+.text-center{text-align:center}
+.mt-8{margin-top:8px}
+.mb-0{margin-bottom:0}
+
+</style>
+<title>Lesson 4 — Reading Motion Graphs</title>
+</head>
+<body>
+<div class="app-header">
+  <a class="back-link" href="index.html">← Home</a>
+  <div class="header-info">
+    <div class="header-title">Reading Motion Graphs</div>
+    <div class="header-sub">Lesson 4 · Physics</div>
+  </div>
+  <div class="xp-pill" id="xp-pill">0 XP</div>
+</div>
+<div class="step-bar">
+  <div class="step-pip active" onclick="stepEngine.show(0)"></div>
+  <div class="step-pip" onclick="stepEngine.show(1)"></div>
+  <div class="step-pip" onclick="stepEngine.show(2)"></div>
+  <div class="step-pip" onclick="stepEngine.show(3)"></div>
+  <div class="step-pip" onclick="stepEngine.show(4)"></div>
+</div>
+<div class="step-label" id="step-label">Part 1 of 5</div>
+
+<div id="step-0">
+  <div class="lesson-content">
+    <div class="tag" style="background:#2f81f722;color:#2f81f7;margin-bottom:10px">The big idea</div>
+    <div class="big-idea">A graph turns a number sequence into a picture. Once you read motion graphs, any flight log makes instant sense.</div>
+    <div class="body-text">Three graphs describe any flight completely: <strong>position vs time</strong> (where is it?), <strong>speed vs time</strong> (how fast?), and <strong>acceleration vs time</strong> (speeding up or slowing down?). They show the same flight from three different angles. The slope of the position graph IS the speed. The slope of the speed graph IS the acceleration.</div>
+    <div class="callout"><strong>The chain:</strong> Position → differentiate → Speed → differentiate → Acceleration. Run it backward with integration. This chain runs inside ArduPlane 400 times per second — it reads raw IMU acceleration and integrates to get position.</div>
+    <div class="callout teal"><strong>Practical value:</strong> After any flight, your ArduPlane flight log shows all three graphs. Crash investigation, performance tuning, diagnosing a bad takeoff — you read the graphs and the flight tells you exactly what happened.</div>
+  </div>
+  <div class="sec-label">All three graphs — drag the time slider</div>
+  <canvas class="vis-canvas" id="cv-all" height="220" style="margin:0 12px 0;width:calc(100% - 24px)"></canvas>
+  <div class="ctrl-group">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Time cursor</span>
+      <input type="range" min="0" max="100" value="30" step="1" id="sl-cur" oninput="updateAllGraphs()">
+      <span class="ctrl-val" id="cv-cur">3.0 s</span>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-label">Position</div><div class="stat-val" id="sv-pos">—<span class="stat-unit">m</span></div></div>
+    <div class="stat"><div class="stat-label">Speed</div><div class="stat-val" id="sv-spd">—<span class="stat-unit">m/s</span></div></div>
+    <div class="stat"><div class="stat-label">Acceleration</div><div class="stat-val" id="sv-acc">—<span class="stat-unit">m/s²</span></div></div>
+  </div>
+  <div class="callout amber"><strong>Watch:</strong> where the position curve is steepest, speed is highest. Where speed is flat, acceleration is zero. Drag the cursor to different parts of the flight and read the relationship.</div>
+  <div class="step-nav"><button class="btn btn-primary" onclick="stepEngine.next()">Next: Position graph →</button></div>
+</div>
+
+<div id="step-1" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#2f81f722;color:#2f81f7;margin-bottom:10px">Position vs time</div>
+    <div class="big-idea">The slope of a position graph is the speed at that moment.</div>
+    <div class="body-text">A steep upward slope means moving fast. A gentle slope means moving slowly. A flat horizontal line means stationary. A curved line means speed is changing (acceleration). The slope at any single point on the curve equals the instantaneous speed at that moment.</div>
+    <div class="callout"><strong>Reading it:</strong> Pick any point on the curve. Draw a tangent line touching the curve at that point. The steepness of that line (rise ÷ run) is the speed at that moment. This is literally the definition of a derivative.</div>
+  </div>
+  <div class="sec-label">Position graph — drag slider to move the tangent line</div>
+  <canvas class="vis-canvas" id="cv-pos" height="180" style="margin:0 12px 0;width:calc(100% - 24px)"></canvas>
+  <div class="ctrl-group">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Time</span>
+      <input type="range" min="0" max="100" value="25" step="1" id="sl-pos" oninput="updatePosGraph()">
+      <span class="ctrl-val" id="cv-pos-t">2.5 s</span>
+    </div>
+  </div>
+  <div class="stat-row two">
+    <div class="stat"><div class="stat-label">Position at cursor</div><div class="stat-val" id="sv-pg-pos">—<span class="stat-unit">m</span></div></div>
+    <div class="stat"><div class="stat-label">Speed (slope)</div><div class="stat-val" id="sv-pg-spd">—<span class="stat-unit">m/s</span></div></div>
+  </div>
+  <div class="callout amber" id="pos-callout">Drag the slider — the orange tangent line shows the slope = speed at that moment.</div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Next: Speed graph →</button>
+  </div>
+</div>
+
+<div id="step-2" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#3fb95022;color:#3fb950;margin-bottom:10px">Speed vs time</div>
+    <div class="big-idea">A flat line on the speed graph means zero acceleration — constant cruise speed.</div>
+    <div class="body-text">On a speed graph: flat line = cruise (constant speed). Sloping up = accelerating (speeding up). Sloping down = decelerating (slowing down). The slope of the speed graph IS the acceleration. A steep slope means rapid speed change. A gentle slope means gradual speed change.</div>
+    <div class="callout teal"><strong>Reading a flight log:</strong> When you download your ArduPlane data after a flight, the speed graph immediately shows you: when did the glider accelerate? How long did cruise hold? Where did the speed drop before landing? The graph tells the story.</div>
+  </div>
+  <div class="sec-label">Speed graph — three flight phases</div>
+  <canvas class="vis-canvas" id="cv-spd" height="180" style="margin:0 12px 0;width:calc(100% - 24px)"></canvas>
+  <div class="mode-btns">
+    <button class="mode-btn on" id="btn-spd-full" onclick="showSpeedPhase('full',this)">Full flight</button>
+    <button class="mode-btn" id="btn-spd-takeoff" onclick="showSpeedPhase('takeoff',this)">Takeoff only</button>
+    <button class="mode-btn" id="btn-spd-cruise" onclick="showSpeedPhase('cruise',this)">Cruise only</button>
+    <button class="mode-btn" id="btn-spd-land" onclick="showSpeedPhase('land',this)">Landing only</button>
+  </div>
+  <div class="callout amber" id="spd-callout"><strong>Full flight:</strong> Steep rise = takeoff acceleration. Flat section = cruise (constant speed). Gradual fall = approach and deceleration before landing.</div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Guided notes →</button>
+  </div>
+</div>
+
+<div id="step-3" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#d2992222;color:#d29922;margin-bottom:10px">Guided notes</div>
+    <div class="big-idea">Lock in the graph reading skills.</div>
+    <div class="body-text">Fill these in from memory. These show up constantly when reading flight logs.</div>
+  </div>
+  <div id="gnotes-container"></div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Quiz →</button>
+  </div>
+</div>
+
+<div id="step-4" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#d2992222;color:#d29922;margin-bottom:10px">Practice — 5 questions</div>
+    <div class="big-idea">Test your graph reading.</div>
+    <div class="body-text">Each question describes a graph feature — figure out what it means physically.</div>
+  </div>
+  <div class="quiz-dots" id="quiz-dots"></div>
+  <div class="quiz-wrap" id="quiz-container"></div>
+</div>
+
+<script>
+// ── GLIDER ACADEMY — shared.js ──
+const GA_KEY = 'glider_academy_v5';
+
+const GA = {
+  // ── STATE ──────────────────────────────────────────────
+  state: {
+    xp: 0, streak: 0, lastStudy: null,
+    done: [0,1,2],
+    notes: {},       // { lessonId: { 'gn0': 'answer', ... } }
+    quizBest: {}     // { lessonId: score }
+  },
+
+  // ── STORAGE ────────────────────────────────────────────
+  save() {
+    try { localStorage.setItem(GA_KEY, JSON.stringify(this.state)); } catch(e) {}
+  },
+
+  load() {
+    try {
+      const raw = localStorage.getItem(GA_KEY);
+      if (raw) {
+        const p = JSON.parse(raw);
+        if (Array.isArray(p.done)) this.state.done = p.done;
+        if (typeof p.xp === 'number') this.state.xp = p.xp;
+        if (typeof p.streak === 'number') this.state.streak = p.streak;
+        if (p.lastStudy) this.state.lastStudy = p.lastStudy;
+        if (p.notes && typeof p.notes === 'object') this.state.notes = p.notes;
+        if (p.quizBest && typeof p.quizBest === 'object') this.state.quizBest = p.quizBest;
+      }
+    } catch(e) {}
+    // Always ensure first 3 lessons marked done
+    [0,1,2].forEach(i => { if (!this.state.done.includes(i)) this.state.done.push(i); });
+  },
+
+  // ── XP & STREAK ────────────────────────────────────────
+  addXP(n) {
+    this.state.xp += n;
+    this.save();
+    this.showToast('+' + n + ' XP', '#3fb950', '#000');
+    this.updateXPPill();
+  },
+
+  markStudied() {
+    const td = new Date().toDateString();
+    const yd = new Date(Date.now() - 86400000).toDateString();
+    if (this.state.lastStudy !== td) {
+      this.state.streak = this.state.lastStudy === yd ? this.state.streak + 1 : 1;
+      this.state.lastStudy = td;
+      this.save();
+    }
+  },
+
+  completeLesson(id, score, total) {
+    const isNew = !this.state.done.includes(id);
+    if (isNew && score >= Math.ceil(total * 0.6)) {
+      this.state.done.push(id);
+      this.state.quizBest[id] = score;
+      this.save();
+      this.addXP(50);
+      return true;
+    }
+    if (score > (this.state.quizBest[id] || 0)) {
+      this.state.quizBest[id] = score;
+      this.save();
+    }
+    return isNew && score >= Math.ceil(total * 0.6);
+  },
+
+  // ── NOTES ──────────────────────────────────────────────
+  saveNote(lessonId, key, val) {
+    if (!this.state.notes[lessonId]) this.state.notes[lessonId] = {};
+    this.state.notes[lessonId][key] = val;
+    this.save();
+  },
+
+  getNote(lessonId, key) {
+    return (this.state.notes[lessonId] || {})[key] || '';
+  },
+
+  // ── UI HELPERS ─────────────────────────────────────────
+  showToast(text, bg, color) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = text;
+    el.style.background = bg || 'var(--teal)';
+    el.style.color = color || '#000';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1050);
+  },
+
+  updateXPPill() {
+    const el = document.getElementById('xp-pill');
+    if (el) el.textContent = this.state.xp + ' XP';
+  },
+
+  isAvailable(id) {
+    return this.state.done.includes(id) || id === 0 ||
+      this.state.done.includes(id - 1) ||
+      id <= Math.max(-1, ...this.state.done) + 1;
+  }
+};
+
+// ── GUIDED NOTES COMPONENT ────────────────────────────────
+function buildGuidedNotes(lessonId, notes) {
+  const saved = GA.state.notes[lessonId] || {};
+  let html = `<div class="gnote-wrap">
+    <div class="gnote-header">✏️ Guided notes — fill in as you read</div>`;
+  notes.forEach((n, i) => {
+    const val = saved['gn' + i] || '';
+    html += `<div class="gnote-item">
+      <div class="gnote-q">${n.q}</div>
+      <div class="gnote-hint">Hint: ${n.hint}</div>
+      <input type="text" class="gnote-input${val ? ' has-value' : ''}" id="gn-${i}"
+        value="${escHTML(val)}" placeholder="Your answer..."
+        oninput="onGNote(${i},this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div style="display:flex;align-items:center;gap:8px;margin-top:5px">
+        <button class="gnote-reveal" onclick="toggleAnswer(${i})">Show answer</button>
+        <span id="gns-${i}" style="font-size:11px;color:var(--t3);opacity:0;transition:opacity .3s">Saved ✓</span>
+      </div>
+      <div class="gnote-answer" id="gna-${i}">${n.answer}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function onGNote(i, val) {
+  const inp = document.getElementById('gn-' + i);
+  if (inp) inp.classList.toggle('has-value', val.length > 0);
+  GA.saveNote(window.LESSON_ID, 'gn' + i, val);
+  const ns = document.getElementById('gns-' + i);
+  if (ns) { ns.style.opacity = '1'; setTimeout(() => ns.style.opacity = '0', 1400); }
+}
+
+function toggleAnswer(i) {
+  const el = document.getElementById('gna-' + i);
+  if (el) el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function escHTML(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── QUIZ ENGINE ───────────────────────────────────────────
+class QuizEngine {
+  constructor(quizzes, containerId, dotsId) {
+    this.quizzes = quizzes;
+    this.container = document.getElementById(containerId);
+    this.dotsEl = document.getElementById(dotsId);
+    this.current = 0;
+    this.scores = new Array(quizzes.length).fill(null);
+    this.history = new Array(quizzes.length).fill(null);
+    this.answered = false;
+    this.onComplete = null;
+    this.buildDots();
+    this.render();
+  }
+
+  buildDots() {
+    if (!this.dotsEl) return;
+    this.dotsEl.innerHTML = this.quizzes.map((_, i) =>
+      `<div class="quiz-dot" id="qd${i}" onclick="quizEngine.jumpTo(${i})"></div>`
+    ).join('');
+    this.updateDots();
+  }
+
+  updateDots() {
+    this.quizzes.forEach((_, i) => {
+      const d = document.getElementById('qd' + i);
+      if (!d) return;
+      if (this.scores[i] === true) d.className = 'quiz-dot right';
+      else if (this.scores[i] === false) d.className = 'quiz-dot wrong';
+      else if (i === this.current) d.className = 'quiz-dot current';
+      else d.className = 'quiz-dot';
+    });
+  }
+
+  render() {
+    if (!this.container) return;
+    if (this.current >= this.quizzes.length) { this.showScore(); return; }
+    const q = this.quizzes[this.current];
+    const alreadyAnswered = this.history[this.current] !== null;
+    const rightSoFar = this.scores.filter(s => s === true).length;
+    this.answered = alreadyAnswered;
+
+    this.container.innerHTML = `
+      <div class="quiz-block">
+        <div class="quiz-meta">
+          <span class="quiz-num">Q${this.current + 1} / ${this.quizzes.length}</span>
+          <span class="quiz-score">${rightSoFar} correct</span>
+        </div>
+        <div class="quiz-q">${q.q}</div>
+        <div class="quiz-opts">
+          ${q.opts.map((o, i) => `<button class="quiz-opt" id="qo${i}" onclick="quizEngine.answer(${i})">${o}</button>`).join('')}
+        </div>
+        <div class="quiz-feedback" id="qfb"></div>
+        <div class="quiz-nav-row">
+          <button class="quiz-nav-btn" ${this.current === 0 ? 'disabled' : ''} onclick="quizEngine.prev()">← Back</button>
+          <span style="font-size:12px;color:var(--t3)">${this.current + 1} of ${this.quizzes.length}</span>
+          <button class="quiz-nav-btn primary" id="qnext" style="display:none" onclick="quizEngine.next()">Next →</button>
+        </div>
+      </div>`;
+
+    // Restore previously answered state
+    if (alreadyAnswered) {
+      const prev = this.history[this.current];
+      document.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+      document.getElementById('qo' + prev).classList.add(prev === q.c ? 'correct' : 'wrong');
+      if (prev !== q.c) document.getElementById('qo' + q.c).classList.add('reveal');
+      const fb = document.getElementById('qfb'); fb.classList.add('show');
+      fb.innerHTML = `<span class="${prev === q.c ? 'fb-ok' : 'fb-bad'}">${prev === q.c ? 'Correct.' : 'Not quite.'}</span> ${prev === q.c ? q.good : q.miss}`;
+      const nb = document.getElementById('qnext'); if (nb) nb.style.display = 'block';
+    }
+    this.updateDots();
+  }
+
+  answer(i) {
+    if (this.answered) return;
+    this.answered = true;
+    const q = this.quizzes[this.current];
+    document.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+    const ok = i === q.c;
+    document.getElementById('qo' + i).classList.add(ok ? 'correct' : 'wrong');
+    if (!ok) document.getElementById('qo' + q.c).classList.add('reveal');
+    const fb = document.getElementById('qfb'); fb.classList.add('show');
+    fb.innerHTML = `<span class="${ok ? 'fb-ok' : 'fb-bad'}">${ok ? 'Correct.' : 'Not quite.'}</span> ${ok ? q.good : q.miss}`;
+    if (this.scores[this.current] === null) {
+      this.scores[this.current] = ok;
+      if (ok) GA.addXP(10);
+    }
+    this.history[this.current] = i;
+    this.updateDots();
+    const nb = document.getElementById('qnext'); if (nb) nb.style.display = 'block';
+    // Auto advance after delay
+    setTimeout(() => this.next(), 2400);
+  }
+
+  next() {
+    this.current++;
+    this.render();
+  }
+
+  prev() {
+    if (this.current === 0) return;
+    this.current--;
+    this.render();
+  }
+
+  jumpTo(i) {
+    const maxReach = Math.max(this.current, ...this.history.map((h, idx) => h !== null ? idx : -1));
+    if (i <= maxReach + 1) { this.current = i; this.render(); }
+  }
+
+  showScore() {
+    const right = this.scores.filter(s => s === true).length;
+    const total = this.quizzes.length;
+    const pct = Math.round(right / total * 100);
+    let msg, sub, color;
+    if (right === total) { msg = 'Perfect score!'; sub = 'Flawless. Every concept is solid. Move forward with confidence.'; color = 'var(--teal)'; }
+    else if (right >= Math.ceil(total * 0.6)) { msg = 'Good work.'; sub = 'Core ideas are there. Review any callouts you\'re unsure about before the next lesson.'; color = 'var(--blue)'; }
+    else { msg = 'Review and retry.'; sub = 'Scroll back through the lesson content and try again. The concepts need one more pass.'; color = 'var(--amber)'; }
+
+    GA.completeLesson(window.LESSON_ID, right, total);
+    if (this.onComplete) this.onComplete(right, total);
+
+    const nextId = window.LESSON_ID + 1;
+    const nextFile = `lesson-${nextId + 1}.html`;
+
+    this.container.innerHTML = `
+      <div class="score-screen">
+        <div class="score-big" style="color:${color}">${right}/${total}</div>
+        <div class="score-pct">${pct}% correct</div>
+        <div class="score-msg">${msg}</div>
+        <div class="score-sub">${sub}</div>
+        <div class="btn-group">
+          ${right < total ? `<button class="btn" onclick="quizEngine.retry()">← Retry</button>` : ''}
+          ${nextId < 13 && right >= Math.ceil(total * 0.6) ? `<a class="btn btn-primary" href="${nextFile}">Lesson ${nextId + 1} →</a>` : ''}
+          <a class="btn" href="index.html">Home</a>
+        </div>
+      </div>`;
+  }
+
+  retry() {
+    this.current = 0;
+    this.scores = new Array(this.quizzes.length).fill(null);
+    this.history = new Array(this.quizzes.length).fill(null);
+    this.answered = false;
+    this.buildDots();
+    this.render();
+  }
+}
+
+let quizEngine;
+
+// ── STEP ENGINE ───────────────────────────────────────────
+class StepEngine {
+  constructor(steps) {
+    this.steps = steps;
+    this.current = 0;
+    this.completed = new Set();
+  }
+
+  show(n) {
+    this.steps.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = i === n ? 'block' : 'none';
+    });
+    this.current = n;
+    if (n > 0) this.completed.add(n - 1);
+    this.updatePips();
+    window.scrollTo(0, 0);
+    // Fire onShow callback after layout so canvases have correct offsetWidth
+    if (typeof window.onStepShow === 'function') {
+      requestAnimationFrame(() => setTimeout(() => window.onStepShow(n), 30));
+    }
+  }
+
+  next() { if (this.current < this.steps.length - 1) this.show(this.current + 1); }
+  prev() { if (this.current > 0) this.show(this.current - 1); }
+
+  updatePips() {
+    document.querySelectorAll('.step-pip').forEach((p, i) => {
+      p.className = 'step-pip' + (i < this.current ? ' done' : i === this.current ? ' active' : '');
+    });
+    const lbl = document.getElementById('step-label');
+    if (lbl) lbl.textContent = `Part ${this.current + 1} of ${this.steps.length}`;
+  }
+}
+
+let stepEngine;
+
+// ── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  GA.load();
+  GA.markStudied();
+  GA.updateXPPill();
+});
+
+</script>
+<script>
+window.LESSON_ID = 3;
+
+function posF(t){return 50+40*Math.sin(t*0.55-0.3)+8*Math.sin(t*1.8);}
+function velF(t){return 40*0.55*Math.cos(t*0.55-0.3)+8*1.8*Math.cos(t*1.8);}
+function accF(t){return -40*0.55*0.55*Math.sin(t*0.55-0.3)-8*1.8*1.8*Math.sin(t*1.8);}
+
+function updateAllGraphs(){
+  const v=parseInt(document.getElementById('sl-cur').value), t=v*0.1;
+  document.getElementById('cv-cur').textContent=t.toFixed(1)+' s';
+  document.getElementById('sv-pos').innerHTML=posF(t).toFixed(1)+'<span class="stat-unit">m</span>';
+  document.getElementById('sv-spd').innerHTML=velF(t).toFixed(2)+'<span class="stat-unit">m/s</span>';
+  document.getElementById('sv-acc').innerHTML=accF(t).toFixed(2)+'<span class="stat-unit">m/s²</span>';
+  const cv=document.getElementById('cv-all');
+  const W=cv.offsetWidth||340,H=220;cv.width=W;cv.height=H;
+  const ctx=cv.getContext('2d');ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);
+  const labels=[{fn:posF,col:'#2f81f7',lbl:'Position (m)',y0:40,range:80},{fn:velF,col:'#3fb950',lbl:'Speed (m/s)',y0:110,range:30},{fn:accF,col:'#d29922',lbl:'Accel (m/s²)',y0:180,range:15}];
+  labels.forEach(g=>{
+    ctx.strokeStyle=g.col;ctx.lineWidth=1.5;ctx.beginPath();
+    for(let i=0;i<=100;i++){
+      const ti=i*0.1,val=g.fn(ti),gy=g.y0-val/g.range*25;
+      i===0?ctx.moveTo(20+i*(W-40)/100,gy):ctx.lineTo(20+i*(W-40)/100,gy);
+    }ctx.stroke();
+    ctx.fillStyle=g.col;ctx.font='bold 10px sans-serif';ctx.textAlign='left';ctx.fillText(g.lbl,22,g.y0-28);
+    // cursor
+    const cx2=20+v*(W-40)/100,cy2=g.y0-g.fn(t)/g.range*25;
+    ctx.fillStyle=g.col;ctx.beginPath();ctx.arc(cx2,cy2,4,0,Math.PI*2);ctx.fill();
+    // vertical cursor line
+    ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(cx2,20);ctx.lineTo(cx2,H-10);ctx.stroke();ctx.setLineDash([]);
+  });
+}
+
+function updatePosGraph(){
+  const v=parseInt(document.getElementById('sl-pos').value),t=v*0.1;
+  document.getElementById('cv-pos-t').textContent=t.toFixed(1)+' s';
+  const pos=posF(t),spd=velF(t);
+  document.getElementById('sv-pg-pos').innerHTML=pos.toFixed(1)+'<span class="stat-unit">m</span>';
+  document.getElementById('sv-pg-spd').innerHTML=spd.toFixed(2)+'<span class="stat-unit">m/s</span>';
+  document.getElementById('pos-callout').innerHTML=spd>1?
+    `<strong>Positive slope.</strong> Speed = ${spd.toFixed(1)} m/s. Glider is moving forward. Steeper tangent = faster speed.`:
+    spd<-1?`<strong>Negative slope.</strong> Speed = ${spd.toFixed(1)} m/s. Glider is moving backward (or decelerating past zero).`:
+    `<strong>Near zero slope.</strong> Speed ≈ 0 m/s. Glider is barely moving — at a turning point on the position curve.`;
+  const cv=document.getElementById('cv-pos');
+  const W=cv.offsetWidth||340,H=180;cv.width=W;cv.height=H;
+  const ctx=cv.getContext('2d');ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#484f58';ctx.lineWidth=0.5;
+  ctx.beginPath();ctx.moveTo(20,H/2);ctx.lineTo(W-20,H/2);ctx.stroke();
+  ctx.strokeStyle='#2f81f7';ctx.lineWidth=2;ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const ti=i*0.1,gy=H/2-posF(ti)*1.1;
+    i===0?ctx.moveTo(20+i*(W-40)/100,gy):ctx.lineTo(20+i*(W-40)/100,gy);
+  }ctx.stroke();
+  const cx2=20+v*(W-40)/100,cy2=H/2-pos*1.1;
+  // Tangent line
+  const tangLen=40;
+  const ang=Math.atan2(-spd*1.1,(W-40)/100*10);
+  ctx.strokeStyle='#d29922';ctx.lineWidth=2;ctx.setLineDash([4,3]);
+  ctx.beginPath();ctx.moveTo(cx2-tangLen*Math.cos(ang),cy2-tangLen*Math.sin(ang));
+  ctx.lineTo(cx2+tangLen*Math.cos(ang),cy2+tangLen*Math.sin(ang));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#d29922';ctx.beginPath();ctx.arc(cx2,cy2,5,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#484f58';ctx.font='10px sans-serif';ctx.textAlign='left';ctx.fillText('← orange line = slope = speed at cursor',22,16);
+}
+
+function showSpeedPhase(phase, btn){
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const cv=document.getElementById('cv-spd');
+  const W=cv.offsetWidth||340,H=180;cv.width=W;cv.height=H;
+  const ctx=cv.getContext('2d');ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);
+  const phases={
+    full:{pts:[[0,5],[15,5],[30,18],[45,18],[60,18],[75,14],[90,8],[100,5]],lbl:'Full flight — 10 second mission',callout:'<strong>Full flight:</strong> Steep rise = takeoff acceleration. Flat section = cruise. Gradual fall = approach deceleration.'},
+    takeoff:{pts:[[0,2],[10,2],[20,5],[30,10],[40,15],[50,18],[60,18]],lbl:'Takeoff only',callout:'<strong>Takeoff roll:</strong> Very steep early (max acceleration, low drag) then slope fades (drag catching up). Classic acceleration-fading curve.'},
+    cruise:{pts:[[0,18],[20,18],[40,18],[60,18],[80,18],[100,18]],lbl:'Cruise only — perfectly flat line',callout:'<strong>Cruise:</strong> Flat horizontal line = zero slope = zero acceleration = constant speed. This is the most efficient flight state.'},
+    land:{pts:[[0,18],[15,17],[30,14],[45,10],[60,7],[75,5],[90,3],[100,2]],lbl:'Landing approach — steady deceleration',callout:'<strong>Landing approach:</strong> Consistently downward slope = constant deceleration. Steady negative slope = steady braking force (drag > thrust).'}
+  };
+  const ph=phases[phase];
+  ctx.strokeStyle='#3fb950';ctx.lineWidth=2;ctx.beginPath();
+  ph.pts.forEach((p,i)=>{
+    const x=20+p[0]/100*(W-40),y=H-30-p[1]*6;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });ctx.stroke();
+  ctx.fillStyle='#484f58';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText(ph.lbl,W/2,H-10);
+  ctx.fillStyle='#484f58';ctx.font='10px sans-serif';ctx.textAlign='left';ctx.fillText('Speed (m/s)',22,16);
+  document.getElementById('spd-callout').innerHTML=ph.callout;
+}
+
+const GNOTES = [
+  {q:'The slope of a position vs time graph equals the _____ at that moment.',hint:'What does steepness of position graph tell you?',answer:'speed — steeper slope = more distance per second = higher speed'},
+  {q:'A flat horizontal line on a speed vs time graph means _____ and _____ acceleration.',hint:'Nothing changing means...',answer:'constant speed — and zero acceleration (flat line = zero slope = zero rate of change)'},
+  {q:'Speed increases from 0 to 18 m/s in 6 seconds. Acceleration = _____ m/s².',hint:'Change in speed ÷ time taken.',answer:'3 m/s² — because (18−0) ÷ 6 = 3'},
+  {q:'On a speed graph, a downward slope means the glider is _____.',hint:'Speed is decreasing...',answer:'decelerating — losing speed. The steeper the downward slope, the faster the deceleration.'},
+  {q:'ArduPlane reads acceleration from its IMU and integrates it twice to get _____.',hint:'Integrate once = velocity, integrate again = ?',answer:'position — acceleration → integrate → velocity → integrate → position. This chain runs 400 times per second.'}
+];
+const QUIZZES = [
+  {q:'On a position graph, a steeper upward slope means...',opts:['Lower speed','Higher speed','Negative acceleration','The glider is decelerating'],c:1,good:'Higher speed — slope = rise/run = distance/time = speed. Steeper = more distance per second = faster.',miss:'Slope of position graph = speed. Steeper slope = more distance covered per second = higher speed.'},
+  {q:'A flat horizontal line on a speed graph means...',opts:['Maximum speed','Minimum speed','Constant speed (zero acceleration)','The glider has stopped'],c:2,good:'Constant speed — flat line = zero slope = zero rate of change of speed = zero acceleration. Classic cruise.',miss:'Flat line = no change = zero slope = zero acceleration = constant speed. The glider could be at any speed, just not changing.'},
+  {q:'A glider speed drops from 18 m/s to 8 m/s in 5 seconds. What is the acceleration?',opts:['+2 m/s²','−2 m/s²','−10 m/s²','+5 m/s²'],c:1,good:'−2 m/s² — acceleration = change in speed ÷ time = (8−18) ÷ 5 = −10 ÷ 5 = −2. Negative because decelerating.',miss:'Acceleration = Δspeed ÷ time = (8−18) ÷ 5 = −10 ÷ 5 = −2 m/s². Negative = decelerating.'},
+  {q:'On a position graph the line is curved rather than straight. What does this tell you?',opts:['Constant speed','Speed is changing — acceleration is happening','The glider is turning','Position is negative'],c:1,good:'Speed is changing — a curve means the slope is continuously changing, which means speed is continuously changing = acceleration.',miss:'Straight line on position graph = constant speed. Curved line = changing slope = changing speed = acceleration.'},
+  {q:'ArduPlane reads raw acceleration from its IMU 400 times per second. How does it figure out where the aircraft is?',opts:['It uses GPS only','It integrates acceleration to get velocity, then integrates again to get position','It measures position directly from the IMU','It uses radio distance measurement'],c:1,good:'Double integration — accelerometer gives acceleration → integrate once → velocity → integrate again → position. GPS corrects the drift.',miss:'Acceleration → integrate → velocity → integrate → position. This is dead reckoning. GPS is blended in to correct drift over time.'}
+];
+function initVisuals(){
+  updateAllGraphs();
+  updatePosGraph();
+  showSpeedPhase('full', document.getElementById('btn-spd-full'));
+}
+// Redraw the correct canvas whenever a step becomes visible
+window.onStepShow = function(n) {
+  if (n === 0) updateAllGraphs();
+  if (n === 1) updatePosGraph();
+  if (n === 2) showSpeedPhase('full', document.getElementById('btn-spd-full'));
+};
+document.addEventListener('DOMContentLoaded', () => {
+  stepEngine = new StepEngine(['step-0','step-1','step-2','step-3','step-4']);
+  document.getElementById('gnotes-container').innerHTML = buildGuidedNotes(3, GNOTES);
+  quizEngine = new QuizEngine(QUIZZES, 'quiz-container', 'quiz-dots');
+  setTimeout(initVisuals, 80);
+});
+</script>
+</body>
+</html>

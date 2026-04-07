@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1117">
+<style>
+/* ── GLIDER ACADEMY — shared.css ── */
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--card:#1c2128;--card2:#252c36;
+  --blue:#2f81f7;--bd:rgba(47,129,247,0.15);--bs:rgba(47,129,247,0.3);
+  --teal:#3fb950;--td:rgba(63,185,80,0.12);
+  --amber:#d29922;--ad:rgba(210,153,34,0.12);
+  --coral:#f85149;--cd:rgba(248,81,73,0.12);
+  --purple:#a371f7;--pd:rgba(163,113,247,0.12);
+  --text:#e6edf3;--t2:#8b949e;--t3:#484f58;
+  --border:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);
+  --r:12px;--rs:8px;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{padding-bottom:24px}
+
+/* HEADER */
+.app-header{padding:calc(var(--st)+10px) 14px 10px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+.back-link{color:var(--blue);font-size:15px;text-decoration:none;white-space:nowrap;padding:4px 0}
+.header-info{flex:1;min-width:0}
+.header-title{font-size:16px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-sub{font-size:11px;color:var(--t3);margin-top:1px}
+.xp-pill{font-size:12px;background:var(--bd);color:var(--blue);border:1px solid var(--bs);padding:3px 10px;border-radius:99px;font-weight:600;white-space:nowrap}
+
+/* PROGRESS STEPS */
+.step-bar{display:flex;gap:4px;padding:12px 14px 0}
+.step-pip{flex:1;height:4px;border-radius:2px;background:var(--bg3);transition:background .3s;cursor:pointer}
+.step-pip.done{background:var(--teal)}
+.step-pip.active{background:var(--blue);opacity:.6}
+.step-label{font-size:12px;color:var(--t2);padding:6px 14px 14px;font-weight:500}
+
+/* CONTENT */
+.lesson-content{padding:16px 14px}
+.big-idea{font-size:20px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:12px}
+.body-text{font-size:15px;color:var(--t2);line-height:1.8;margin-bottom:12px}
+.body-text strong{color:var(--text);font-weight:600}
+
+/* CALLOUTS */
+.callout{border-left:3px solid var(--blue);background:var(--bd);border-radius:0 var(--rs) var(--rs) 0;padding:11px 13px;margin:12px 0;font-size:14px;color:var(--t2);line-height:1.7}
+.callout strong{color:var(--text);font-weight:600}
+.callout.teal{border-left-color:var(--teal);background:var(--td)}
+.callout.amber{border-left-color:var(--amber);background:var(--ad)}
+.callout.coral{border-left-color:var(--coral);background:var(--cd)}
+.callout.purple{border-left-color:var(--purple);background:var(--pd)}
+
+/* SECTION LABELS */
+.sec-label{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);padding:16px 14px 8px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin:0 12px 12px;overflow:hidden}
+.card-pad{padding:13px 14px}
+
+/* INTERACTIVE CANVAS */
+.vis-wrap{margin:0 12px 12px}
+.vis-canvas{width:100%;border-radius:var(--rs);border:1px solid var(--border);display:block;background:var(--bg3)}
+
+/* CONTROLS */
+.ctrl-group{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;margin:0 12px 12px}
+.ctrl-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ctrl-row:last-child{margin-bottom:0}
+.ctrl-label{font-size:13px;color:var(--t2);min-width:100px;flex-shrink:0}
+.ctrl-val{font-size:13px;font-weight:700;min-width:58px;text-align:right;color:var(--text)}
+input[type=range]{-webkit-appearance:none;flex:1;height:4px;border-radius:2px;background:var(--bg3);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--blue);cursor:pointer;border:2px solid var(--bg)}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 12px;margin-bottom:12px}
+.stat-row.two{grid-template-columns:repeat(2,1fr)}
+.stat{background:var(--bg3);border-radius:var(--rs);padding:10px 8px;text-align:center}
+.stat-label{font-size:10px;color:var(--t3);margin-bottom:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.stat-val{font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.stat-unit{font-size:10px;color:var(--t2);margin-left:2px}
+
+/* MODE BUTTONS */
+.mode-btns{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px;margin-bottom:12px}
+.mode-btn{font-size:12px;padding:6px 12px;border-radius:99px;border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.mode-btn.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* GUIDED NOTES */
+.gnote-wrap{background:rgba(210,153,34,0.06);border:1px solid rgba(210,153,34,0.2);border-radius:var(--r);padding:14px;margin:0 12px 12px}
+.gnote-header{font-size:12px;font-weight:700;color:var(--amber);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.gnote-item{margin-bottom:14px}
+.gnote-item:last-child{margin-bottom:0}
+.gnote-q{font-size:14px;color:var(--text);line-height:1.55;margin-bottom:6px}
+.gnote-hint{font-size:12px;color:var(--t3);margin-bottom:6px;font-style:italic}
+.gnote-input{width:100%;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.gnote-input:focus{border-color:var(--amber)}
+.gnote-input.has-value{border-color:rgba(210,153,34,0.4)}
+.gnote-reveal{font-size:12px;color:var(--amber);background:none;border:1px solid rgba(210,153,34,0.3);border-radius:99px;padding:3px 10px;cursor:pointer;margin-top:5px}
+.gnote-answer{font-size:13px;color:var(--teal);background:var(--td);border-radius:var(--rs);padding:9px 11px;margin-top:6px;line-height:1.6;display:none}
+
+/* QUIZ */
+.quiz-wrap{padding:0 12px 12px}
+.quiz-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.quiz-num{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.05em}
+.quiz-score{font-size:11px;color:var(--teal);font-weight:600}
+.quiz-q{font-size:15px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:12px}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{font-size:14px;padding:11px 13px;border:1px solid var(--b2);border-radius:var(--rs);background:transparent;color:var(--text);cursor:pointer;text-align:left;transition:background .1s;line-height:1.4}
+.quiz-opt:active{background:var(--bg3)}
+.quiz-opt.correct{background:var(--td);border-color:var(--teal);color:#3fb950;font-weight:500}
+.quiz-opt.wrong{background:var(--cd);border-color:var(--coral);color:#f85149}
+.quiz-opt.reveal{background:var(--td);border-color:var(--teal);color:#3fb950}
+.quiz-feedback{font-size:13px;color:var(--t2);margin-top:10px;line-height:1.65;display:none;padding:10px 11px;background:var(--bg3);border-radius:var(--rs)}
+.quiz-feedback.show{display:block}
+.fb-ok{color:var(--teal);font-weight:700}.fb-bad{color:var(--coral);font-weight:700}
+.quiz-dots{display:flex;gap:5px;padding:0 12px;margin-bottom:8px}
+.quiz-dot{width:9px;height:9px;border-radius:50%;background:var(--bg3);cursor:pointer;transition:transform .1s}
+.quiz-dot:active{transform:scale(1.4)}
+.quiz-dot.right{background:var(--teal)}.quiz-dot.wrong{background:var(--coral)}.quiz-dot.current{background:var(--blue)}
+.quiz-nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px}
+.quiz-nav-btn{font-size:13px;padding:8px 16px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;white-space:nowrap}
+.quiz-nav-btn:disabled{opacity:.25;cursor:default}
+.quiz-nav-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* SCORE SCREEN */
+.score-screen{text-align:center;padding:32px 20px}
+.score-big{font-size:64px;font-weight:800;color:var(--text);line-height:1}
+.score-pct{font-size:15px;color:var(--t2);margin:4px 0 16px}
+.score-msg{font-size:18px;font-weight:700;margin-bottom:6px}
+.score-sub{font-size:14px;color:var(--t2);line-height:1.65;margin-bottom:24px;max-width:320px;margin-left:auto;margin-right:auto}
+.btn-group{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.btn{font-size:14px;font-weight:500;padding:11px 20px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--text);cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-teal{background:var(--teal);color:#000;border-color:var(--teal)}
+
+/* STEP NAV */
+.step-nav{display:flex;gap:8px;padding:8px 12px 16px;position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border)}
+.step-nav .btn{flex:1}
+
+/* BADGES */
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
+
+/* TOAST */
+@keyframes toast-up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+.toast{position:fixed;top:64px;right:14px;padding:6px 14px;border-radius:99px;font-weight:700;font-size:13px;z-index:999;pointer-events:none;animation:toast-up 1s ease forwards}
+
+/* UTIL */
+.text-center{text-align:center}
+.mt-8{margin-top:8px}
+.mb-0{margin-bottom:0}
+
+</style>
+<title>Lesson 6 — Glide Ratio In Depth</title>
+</head>
+<body>
+<div class="app-header">
+  <a class="back-link" href="index.html">← Home</a>
+  <div class="header-info">
+    <div class="header-title">Glide Ratio in Depth</div>
+    <div class="header-sub">Lesson 6 · Applied</div>
+  </div>
+  <div class="xp-pill" id="xp-pill">0 XP</div>
+</div>
+<div class="step-bar">
+  <div class="step-pip active" onclick="stepEngine.show(0)"></div>
+  <div class="step-pip" onclick="stepEngine.show(1)"></div>
+  <div class="step-pip" onclick="stepEngine.show(2)"></div>
+  <div class="step-pip" onclick="stepEngine.show(3)"></div>
+  <div class="step-pip" onclick="stepEngine.show(4)"></div>
+</div>
+<div class="step-label" id="step-label">Part 1 of 5</div>
+
+<div id="step-0">
+  <div class="lesson-content">
+    <div class="tag" style="background:#3fb95022;color:#3fb950;margin-bottom:10px">The most important number</div>
+    <div class="big-idea">Glide ratio is how far your aircraft travels forward for every metre it descends. It defines your mission capability.</div>
+    <div class="body-text">A glide ratio of 1:12 means 12 metres forward per 1 metre descended. A sailplane might achieve 1:50. The Ranger 600 you'll start with achieves about 1:10. Your future custom design should target 1:15 or better. The difference between 1:10 and 1:15 is not small — from 200 m altitude it's the difference between 2 km and 3 km of silent range.</div>
+    <div class="callout"><strong>The formula:</strong> Glide ratio = forward distance ÷ altitude lost. Or: forward distance = altitude × ratio number. Or: altitude needed = target distance ÷ ratio number. All three rearrangements of the same relationship.</div>
+    <div class="callout teal"><strong>Tactical value:</strong> Your glider can cut the motor at altitude, silently overfly a target area, and relight the motor for return. The higher your glide ratio, the more area you can cover silently. This is a direct engineering number that determines mission utility.</div>
+  </div>
+  <div class="sec-label">Glide ratio comparison — drag to compare</div>
+  <canvas class="vis-canvas" id="cv-cmp" height="200" style="margin:0 12px 0;width:calc(100% - 24px)"></canvas>
+  <div class="ctrl-group">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Your glide ratio</span>
+      <input type="range" min="5" max="25" value="12" step="1" id="sl-mygr" oninput="updateCmp()">
+      <span class="ctrl-val" id="cv-mygr">1:12</span>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">Altitude</span>
+      <input type="range" min="50" max="400" value="200" step="10" id="sl-myalt" oninput="updateCmp()">
+      <span class="ctrl-val" id="cv-myalt">200 m</span>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-label">Your range</div><div class="stat-val" id="sv-myr">2,400<span class="stat-unit">m</span></div></div>
+    <div class="stat"><div class="stat-label">Ranger 600 (1:10)</div><div class="stat-val" id="sv-r6r">2,000<span class="stat-unit">m</span></div></div>
+    <div class="stat"><div class="stat-label">Gain over baseline</div><div class="stat-val" id="sv-gain" style="font-size:14px">+400 m</div></div>
+  </div>
+  <div class="callout amber" id="cmp-callout">From 200 m, your 1:12 glider covers 400 m more than the Ranger 600 baseline.</div>
+  <div class="step-nav"><button class="btn btn-primary" onclick="stepEngine.next()">Next: What determines it →</button></div>
+</div>
+
+<div id="step-1" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#3fb95022;color:#3fb950;margin-bottom:10px">What determines glide ratio</div>
+    <div class="big-idea">Three things: wing shape, aspect ratio, and airframe cleanliness. All three reduce drag.</div>
+    <div class="body-text">Glide ratio is essentially a measure of how efficiently your aircraft converts altitude into forward motion. The only thing wasting that energy is drag. So improving glide ratio means reducing drag in all its forms: induced drag (from the wings generating lift) and parasitic drag (from everything that isn't the wings).</div>
+    <div class="callout"><strong>Wing shape:</strong> A well-curved airfoil section generates lift more efficiently than a flat or poorly designed one, reducing the induced drag for a given lift force.</div>
+    <div class="callout teal"><strong>Aspect ratio:</strong> Longer thinner wings have less induced drag. Every time you double the aspect ratio, you roughly halve the induced drag. This is why sailplanes look like flying rulers.</div>
+    <div class="callout amber"><strong>Airframe cleanliness:</strong> Every bump, wire, joint, and protrusion adds parasitic drag. A clean tight fuselage, flush motor mount, and no hanging wires can add 15–20% to your glide ratio over a sloppy build.</div>
+  </div>
+  <div class="sec-label">Drag factors — see how each one affects glide ratio</div>
+  <canvas class="vis-canvas" id="cv-drag-f" height="160" style="margin:0 12px 0;width:calc(100% - 24px)"></canvas>
+  <div class="ctrl-group">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Aspect ratio</span>
+      <input type="range" min="4" max="16" value="8" step="1" id="sl-ar" oninput="updateDragFactors()">
+      <span class="ctrl-val" id="cv-ar">8</span>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">Build cleanliness</span>
+      <input type="range" min="1" max="10" value="7" step="1" id="sl-clean" oninput="updateDragFactors()">
+      <span class="ctrl-val" id="cv-clean">7/10</span>
+    </div>
+  </div>
+  <div class="stat-row two">
+    <div class="stat"><div class="stat-label">Estimated glide ratio</div><div class="stat-val" id="sv-est-gr">~1:11</div></div>
+    <div class="stat"><div class="stat-label">Range from 200 m</div><div class="stat-val" id="sv-est-r">2,200<span class="stat-unit">m</span></div></div>
+  </div>
+  <div class="callout amber" id="df-callout">AR 8, clean build (7/10) → estimated glide ratio ~1:11.</div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Next: Mission planning →</button>
+  </div>
+</div>
+
+<div id="step-2" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#3fb95022;color:#3fb950;margin-bottom:10px">Mission planning</div>
+    <div class="big-idea">Glide ratio directly determines what missions your aircraft can fly.</div>
+    <div class="body-text">Different missions need different glide ratios. A short reconnaissance pass might need 1:8. A long silent overfly mission needs 1:15+. Understanding the required glide ratio for your target mission tells you exactly what wing design you need — before you cut a single piece of foam.</div>
+    <div class="callout"><strong>Working backward:</strong> Define the mission first. "I need to silently overfly a 3 km stretch starting from 250 m altitude." Required glide ratio = 3000 ÷ 250 = 12. So you need 1:12 minimum, target 1:15 for safety margin.</div>
+    <div class="callout teal"><strong>Safety margin:</strong> Always design for better glide ratio than the minimum required. Thermal conditions, wind, and small design imperfections will all reduce your actual glide ratio below the theoretical value.</div>
+  </div>
+  <div class="sec-label">Mission planner — what glide ratio do you need?</div>
+  <div class="ctrl-group">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Target distance</span>
+      <input type="range" min="500" max="6000" value="2500" step="100" id="sl-tdist" oninput="updateMission()">
+      <span class="ctrl-val" id="cv-tdist">2,500 m</span>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">Available altitude</span>
+      <input type="range" min="50" max="500" value="250" step="10" id="sl-talt" oninput="updateMission()">
+      <span class="ctrl-val" id="cv-talt">250 m</span>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-label">Min. glide ratio</div><div class="stat-val" id="sv-min-gr">1:10</div></div>
+    <div class="stat"><div class="stat-label">Target (with margin)</div><div class="stat-val" id="sv-tgt-gr">1:13</div></div>
+    <div class="stat"><div class="stat-label">Feasibility</div><div class="stat-val" id="sv-feasible" style="font-size:13px">Achievable</div></div>
+  </div>
+  <div class="card card-pad"><div style="font-size:14px;color:var(--t2);line-height:1.9" id="mission-working">Min ratio = 2500 ÷ 250 = 10.0. Target = 13 (30% margin).</div></div>
+  <div class="callout amber" id="mission-callout">This mission is achievable with a well-designed foam-board glider.</div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Guided notes →</button>
+  </div>
+</div>
+
+<div id="step-3" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#d2992222;color:#d29922;margin-bottom:10px">Guided notes</div>
+    <div class="big-idea">Lock in the most important number for your aircraft.</div>
+    <div class="body-text">Fill these in from memory. Glide ratio shows up everywhere from wing design to mission planning.</div>
+  </div>
+  <div id="gnotes-container"></div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Quiz →</button>
+  </div>
+</div>
+
+<div id="step-4" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#d2992222;color:#d29922;margin-bottom:10px">Practice — 5 questions</div>
+    <div class="big-idea">Real mission calculations.</div>
+    <div class="body-text">These are actual design decisions you'll face when building your aircraft.</div>
+  </div>
+  <div class="quiz-dots" id="quiz-dots"></div>
+  <div class="quiz-wrap" id="quiz-container"></div>
+</div>
+
+<script>
+// ── GLIDER ACADEMY — shared.js ──
+const GA_KEY = 'glider_academy_v5';
+
+const GA = {
+  // ── STATE ──────────────────────────────────────────────
+  state: {
+    xp: 0, streak: 0, lastStudy: null,
+    done: [0,1,2],
+    notes: {},       // { lessonId: { 'gn0': 'answer', ... } }
+    quizBest: {}     // { lessonId: score }
+  },
+
+  // ── STORAGE ────────────────────────────────────────────
+  save() {
+    try { localStorage.setItem(GA_KEY, JSON.stringify(this.state)); } catch(e) {}
+  },
+
+  load() {
+    try {
+      const raw = localStorage.getItem(GA_KEY);
+      if (raw) {
+        const p = JSON.parse(raw);
+        if (Array.isArray(p.done)) this.state.done = p.done;
+        if (typeof p.xp === 'number') this.state.xp = p.xp;
+        if (typeof p.streak === 'number') this.state.streak = p.streak;
+        if (p.lastStudy) this.state.lastStudy = p.lastStudy;
+        if (p.notes && typeof p.notes === 'object') this.state.notes = p.notes;
+        if (p.quizBest && typeof p.quizBest === 'object') this.state.quizBest = p.quizBest;
+      }
+    } catch(e) {}
+    // Always ensure first 3 lessons marked done
+    [0,1,2].forEach(i => { if (!this.state.done.includes(i)) this.state.done.push(i); });
+  },
+
+  // ── XP & STREAK ────────────────────────────────────────
+  addXP(n) {
+    this.state.xp += n;
+    this.save();
+    this.showToast('+' + n + ' XP', '#3fb950', '#000');
+    this.updateXPPill();
+  },
+
+  markStudied() {
+    const td = new Date().toDateString();
+    const yd = new Date(Date.now() - 86400000).toDateString();
+    if (this.state.lastStudy !== td) {
+      this.state.streak = this.state.lastStudy === yd ? this.state.streak + 1 : 1;
+      this.state.lastStudy = td;
+      this.save();
+    }
+  },
+
+  completeLesson(id, score, total) {
+    const isNew = !this.state.done.includes(id);
+    if (isNew && score >= Math.ceil(total * 0.6)) {
+      this.state.done.push(id);
+      this.state.quizBest[id] = score;
+      this.save();
+      this.addXP(50);
+      return true;
+    }
+    if (score > (this.state.quizBest[id] || 0)) {
+      this.state.quizBest[id] = score;
+      this.save();
+    }
+    return isNew && score >= Math.ceil(total * 0.6);
+  },
+
+  // ── NOTES ──────────────────────────────────────────────
+  saveNote(lessonId, key, val) {
+    if (!this.state.notes[lessonId]) this.state.notes[lessonId] = {};
+    this.state.notes[lessonId][key] = val;
+    this.save();
+  },
+
+  getNote(lessonId, key) {
+    return (this.state.notes[lessonId] || {})[key] || '';
+  },
+
+  // ── UI HELPERS ─────────────────────────────────────────
+  showToast(text, bg, color) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = text;
+    el.style.background = bg || 'var(--teal)';
+    el.style.color = color || '#000';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1050);
+  },
+
+  updateXPPill() {
+    const el = document.getElementById('xp-pill');
+    if (el) el.textContent = this.state.xp + ' XP';
+  },
+
+  isAvailable(id) {
+    return this.state.done.includes(id) || id === 0 ||
+      this.state.done.includes(id - 1) ||
+      id <= Math.max(-1, ...this.state.done) + 1;
+  }
+};
+
+// ── GUIDED NOTES COMPONENT ────────────────────────────────
+function buildGuidedNotes(lessonId, notes) {
+  const saved = GA.state.notes[lessonId] || {};
+  let html = `<div class="gnote-wrap">
+    <div class="gnote-header">✏️ Guided notes — fill in as you read</div>`;
+  notes.forEach((n, i) => {
+    const val = saved['gn' + i] || '';
+    html += `<div class="gnote-item">
+      <div class="gnote-q">${n.q}</div>
+      <div class="gnote-hint">Hint: ${n.hint}</div>
+      <input type="text" class="gnote-input${val ? ' has-value' : ''}" id="gn-${i}"
+        value="${escHTML(val)}" placeholder="Your answer..."
+        oninput="onGNote(${i},this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div style="display:flex;align-items:center;gap:8px;margin-top:5px">
+        <button class="gnote-reveal" onclick="toggleAnswer(${i})">Show answer</button>
+        <span id="gns-${i}" style="font-size:11px;color:var(--t3);opacity:0;transition:opacity .3s">Saved ✓</span>
+      </div>
+      <div class="gnote-answer" id="gna-${i}">${n.answer}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function onGNote(i, val) {
+  const inp = document.getElementById('gn-' + i);
+  if (inp) inp.classList.toggle('has-value', val.length > 0);
+  GA.saveNote(window.LESSON_ID, 'gn' + i, val);
+  const ns = document.getElementById('gns-' + i);
+  if (ns) { ns.style.opacity = '1'; setTimeout(() => ns.style.opacity = '0', 1400); }
+}
+
+function toggleAnswer(i) {
+  const el = document.getElementById('gna-' + i);
+  if (el) el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function escHTML(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── QUIZ ENGINE ───────────────────────────────────────────
+class QuizEngine {
+  constructor(quizzes, containerId, dotsId) {
+    this.quizzes = quizzes;
+    this.container = document.getElementById(containerId);
+    this.dotsEl = document.getElementById(dotsId);
+    this.current = 0;
+    this.scores = new Array(quizzes.length).fill(null);
+    this.history = new Array(quizzes.length).fill(null);
+    this.answered = false;
+    this.onComplete = null;
+    this.buildDots();
+    this.render();
+  }
+
+  buildDots() {
+    if (!this.dotsEl) return;
+    this.dotsEl.innerHTML = this.quizzes.map((_, i) =>
+      `<div class="quiz-dot" id="qd${i}" onclick="quizEngine.jumpTo(${i})"></div>`
+    ).join('');
+    this.updateDots();
+  }
+
+  updateDots() {
+    this.quizzes.forEach((_, i) => {
+      const d = document.getElementById('qd' + i);
+      if (!d) return;
+      if (this.scores[i] === true) d.className = 'quiz-dot right';
+      else if (this.scores[i] === false) d.className = 'quiz-dot wrong';
+      else if (i === this.current) d.className = 'quiz-dot current';
+      else d.className = 'quiz-dot';
+    });
+  }
+
+  render() {
+    if (!this.container) return;
+    if (this.current >= this.quizzes.length) { this.showScore(); return; }
+    const q = this.quizzes[this.current];
+    const alreadyAnswered = this.history[this.current] !== null;
+    const rightSoFar = this.scores.filter(s => s === true).length;
+    this.answered = alreadyAnswered;
+
+    this.container.innerHTML = `
+      <div class="quiz-block">
+        <div class="quiz-meta">
+          <span class="quiz-num">Q${this.current + 1} / ${this.quizzes.length}</span>
+          <span class="quiz-score">${rightSoFar} correct</span>
+        </div>
+        <div class="quiz-q">${q.q}</div>
+        <div class="quiz-opts">
+          ${q.opts.map((o, i) => `<button class="quiz-opt" id="qo${i}" onclick="quizEngine.answer(${i})">${o}</button>`).join('')}
+        </div>
+        <div class="quiz-feedback" id="qfb"></div>
+        <div class="quiz-nav-row">
+          <button class="quiz-nav-btn" ${this.current === 0 ? 'disabled' : ''} onclick="quizEngine.prev()">← Back</button>
+          <span style="font-size:12px;color:var(--t3)">${this.current + 1} of ${this.quizzes.length}</span>
+          <button class="quiz-nav-btn primary" id="qnext" style="display:none" onclick="quizEngine.next()">Next →</button>
+        </div>
+      </div>`;
+
+    // Restore previously answered state
+    if (alreadyAnswered) {
+      const prev = this.history[this.current];
+      document.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+      document.getElementById('qo' + prev).classList.add(prev === q.c ? 'correct' : 'wrong');
+      if (prev !== q.c) document.getElementById('qo' + q.c).classList.add('reveal');
+      const fb = document.getElementById('qfb'); fb.classList.add('show');
+      fb.innerHTML = `<span class="${prev === q.c ? 'fb-ok' : 'fb-bad'}">${prev === q.c ? 'Correct.' : 'Not quite.'}</span> ${prev === q.c ? q.good : q.miss}`;
+      const nb = document.getElementById('qnext'); if (nb) nb.style.display = 'block';
+    }
+    this.updateDots();
+  }
+
+  answer(i) {
+    if (this.answered) return;
+    this.answered = true;
+    const q = this.quizzes[this.current];
+    document.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+    const ok = i === q.c;
+    document.getElementById('qo' + i).classList.add(ok ? 'correct' : 'wrong');
+    if (!ok) document.getElementById('qo' + q.c).classList.add('reveal');
+    const fb = document.getElementById('qfb'); fb.classList.add('show');
+    fb.innerHTML = `<span class="${ok ? 'fb-ok' : 'fb-bad'}">${ok ? 'Correct.' : 'Not quite.'}</span> ${ok ? q.good : q.miss}`;
+    if (this.scores[this.current] === null) {
+      this.scores[this.current] = ok;
+      if (ok) GA.addXP(10);
+    }
+    this.history[this.current] = i;
+    this.updateDots();
+    const nb = document.getElementById('qnext'); if (nb) nb.style.display = 'block';
+    // Auto advance after delay
+    setTimeout(() => this.next(), 2400);
+  }
+
+  next() {
+    this.current++;
+    this.render();
+  }
+
+  prev() {
+    if (this.current === 0) return;
+    this.current--;
+    this.render();
+  }
+
+  jumpTo(i) {
+    const maxReach = Math.max(this.current, ...this.history.map((h, idx) => h !== null ? idx : -1));
+    if (i <= maxReach + 1) { this.current = i; this.render(); }
+  }
+
+  showScore() {
+    const right = this.scores.filter(s => s === true).length;
+    const total = this.quizzes.length;
+    const pct = Math.round(right / total * 100);
+    let msg, sub, color;
+    if (right === total) { msg = 'Perfect score!'; sub = 'Flawless. Every concept is solid. Move forward with confidence.'; color = 'var(--teal)'; }
+    else if (right >= Math.ceil(total * 0.6)) { msg = 'Good work.'; sub = 'Core ideas are there. Review any callouts you\'re unsure about before the next lesson.'; color = 'var(--blue)'; }
+    else { msg = 'Review and retry.'; sub = 'Scroll back through the lesson content and try again. The concepts need one more pass.'; color = 'var(--amber)'; }
+
+    GA.completeLesson(window.LESSON_ID, right, total);
+    if (this.onComplete) this.onComplete(right, total);
+
+    const nextId = window.LESSON_ID + 1;
+    const nextFile = `lesson-${nextId + 1}.html`;
+
+    this.container.innerHTML = `
+      <div class="score-screen">
+        <div class="score-big" style="color:${color}">${right}/${total}</div>
+        <div class="score-pct">${pct}% correct</div>
+        <div class="score-msg">${msg}</div>
+        <div class="score-sub">${sub}</div>
+        <div class="btn-group">
+          ${right < total ? `<button class="btn" onclick="quizEngine.retry()">← Retry</button>` : ''}
+          ${nextId < 13 && right >= Math.ceil(total * 0.6) ? `<a class="btn btn-primary" href="${nextFile}">Lesson ${nextId + 1} →</a>` : ''}
+          <a class="btn" href="index.html">Home</a>
+        </div>
+      </div>`;
+  }
+
+  retry() {
+    this.current = 0;
+    this.scores = new Array(this.quizzes.length).fill(null);
+    this.history = new Array(this.quizzes.length).fill(null);
+    this.answered = false;
+    this.buildDots();
+    this.render();
+  }
+}
+
+let quizEngine;
+
+// ── STEP ENGINE ───────────────────────────────────────────
+class StepEngine {
+  constructor(steps) {
+    this.steps = steps;
+    this.current = 0;
+    this.completed = new Set();
+  }
+
+  show(n) {
+    this.steps.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = i === n ? 'block' : 'none';
+    });
+    this.current = n;
+    if (n > 0) this.completed.add(n - 1);
+    this.updatePips();
+    window.scrollTo(0, 0);
+    // Fire onShow callback after layout so canvases have correct offsetWidth
+    if (typeof window.onStepShow === 'function') {
+      requestAnimationFrame(() => setTimeout(() => window.onStepShow(n), 30));
+    }
+  }
+
+  next() { if (this.current < this.steps.length - 1) this.show(this.current + 1); }
+  prev() { if (this.current > 0) this.show(this.current - 1); }
+
+  updatePips() {
+    document.querySelectorAll('.step-pip').forEach((p, i) => {
+      p.className = 'step-pip' + (i < this.current ? ' done' : i === this.current ? ' active' : '');
+    });
+    const lbl = document.getElementById('step-label');
+    if (lbl) lbl.textContent = `Part ${this.current + 1} of ${this.steps.length}`;
+  }
+}
+
+let stepEngine;
+
+// ── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  GA.load();
+  GA.markStudied();
+  GA.updateXPPill();
+});
+
+</script>
+<script>
+window.LESSON_ID = 5;
+function updateCmp(){
+  const gr=parseInt(document.getElementById('sl-mygr').value),alt=parseInt(document.getElementById('sl-myalt').value);
+  document.getElementById('cv-mygr').textContent='1:'+gr;
+  document.getElementById('cv-myalt').textContent=alt+' m';
+  const myR=alt*gr,r6R=alt*10,gain=myR-r6R;
+  document.getElementById('sv-myr').innerHTML=myR.toLocaleString()+'<span class="stat-unit">m</span>';
+  document.getElementById('sv-r6r').innerHTML=r6R.toLocaleString()+'<span class="stat-unit">m</span>';
+  document.getElementById('sv-gain').textContent=(gain>=0?'+':'')+gain.toLocaleString()+' m';
+  document.getElementById('sv-gain').style.color=gain>0?'var(--teal)':gain<0?'var(--coral)':'var(--text)';
+  document.getElementById('cmp-callout').innerHTML=`From ${alt} m altitude at glide ratio 1:${gr}: your aircraft covers <strong>${myR.toLocaleString()} m</strong>. ${gain>=0?"That is "+gain.toLocaleString()+" m more than":"That is "+Math.abs(gain).toLocaleString()+" m less than"} the Ranger 600 baseline (1:10).`;
+  const cv=document.getElementById('cv-cmp');
+  const W=cv.offsetWidth||340,H=200;cv.width=W;cv.height=H;
+  const ctx=cv.getContext('2d');ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#21262d';ctx.fillRect(0,H-20,W,20);
+  const startX=20,startY=30;
+  const maxRange=Math.max(myR,r6R,1);
+  const scaleX=(W-40)/maxRange;
+  const drawPath=(range,y,col,lbl)=>{
+    const endX=startX+range*scaleX;
+    const endY=y+alt*0.3;
+    ctx.strokeStyle=col;ctx.lineWidth=2;ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(startX,y);ctx.lineTo(Math.min(endX,W-20),Math.min(endY,H-30));ctx.stroke();
+    ctx.fillStyle=col;ctx.beginPath();ctx.arc(startX,y,4,0,Math.PI*2);ctx.fill();
+    ctx.font='bold 11px sans-serif';ctx.textAlign='left';ctx.fillStyle=col;
+    ctx.fillText(lbl+': '+(range/1000).toFixed(1)+'km',startX+4,y-8);
+  };
+  drawPath(myR,60,'#3fb950','Your glider (1:'+gr+')');
+  drawPath(r6R,120,'#2f81f7','Ranger 600 (1:10)');
+  ctx.fillStyle='#484f58';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText('Both starting from '+alt+' m altitude',W/2,H-6);
+}
+function updateDragFactors(){
+  const ar=parseInt(document.getElementById('sl-ar').value),clean=parseInt(document.getElementById('sl-clean').value);
+  document.getElementById('cv-ar').textContent=ar;
+  document.getElementById('cv-clean').textContent=clean+'/10';
+  const baseGR=ar*0.9+clean*0.3;const gr=Math.round(baseGR*10)/10;
+  const grInt=Math.round(gr);
+  document.getElementById('sv-est-gr').textContent='~1:'+grInt;
+  document.getElementById('sv-est-r').innerHTML=(200*grInt).toLocaleString()+'<span class="stat-unit">m</span>';
+  const cv=document.getElementById('cv-drag-f');
+  const W=cv.offsetWidth||340,H=160;cv.width=W;cv.height=H;
+  const ctx=cv.getContext('2d');ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);
+  const factors=[
+    {lbl:'Induced drag (wing)',val:Math.max(5,25-ar*1.5),col:'#f85149'},
+    {lbl:'Parasitic drag (airframe)',val:Math.max(5,20-clean*1.5),col:'#d29922'},
+    {lbl:'Total lift generated',val:ar*4+clean*2,col:'#3fb950'},
+  ];
+  const maxVal=Math.max(...factors.map(f=>f.val));
+  factors.forEach((f,i)=>{
+    const bw=Math.round((f.val/maxVal)*(W-120));
+    const y=24+i*42;
+    ctx.fillStyle=f.col+'44';ctx.fillRect(100,y,W-120,30);
+    ctx.fillStyle=f.col;ctx.fillRect(100,y,bw,30);
+    ctx.font='11px sans-serif';ctx.fillStyle='#8b949e';ctx.textAlign='right';ctx.fillText(f.lbl,96,y+19);
+    ctx.font='bold 12px sans-serif';ctx.fillStyle='#fff';ctx.textAlign='left';
+    ctx.fillText(f.val.toFixed(0),108,y+19);
+  });
+  document.getElementById('df-callout').innerHTML=`AR ${ar}, cleanliness ${clean}/10 → estimated glide ratio <strong>~1:${grInt}</strong>. From 200m altitude: <strong>${(200*grInt).toLocaleString()} m</strong> range.`;
+}
+function updateMission(){
+  const dist=parseInt(document.getElementById('sl-tdist').value),alt=parseInt(document.getElementById('sl-talt').value);
+  document.getElementById('cv-tdist').textContent=dist.toLocaleString()+' m';
+  document.getElementById('cv-talt').textContent=alt+' m';
+  const minGR=dist/alt,tgtGR=Math.ceil(minGR*1.3);
+  document.getElementById('sv-min-gr').textContent='1:'+minGR.toFixed(1);
+  document.getElementById('sv-tgt-gr').textContent='1:'+tgtGR;
+  const feasible=tgtGR<=20;
+  document.getElementById('sv-feasible').textContent=tgtGR<=15?'Easy':tgtGR<=20?'Achievable':'Challenging';
+  document.getElementById('sv-feasible').style.color=tgtGR<=15?'var(--teal)':tgtGR<=20?'var(--amber)':'var(--coral)';
+  document.getElementById('mission-working').innerHTML=`Min ratio = ${dist.toLocaleString()} ÷ ${alt} = ${minGR.toFixed(1)}<br>Target (30% margin) = 1:${tgtGR}<br>A foam-board glider with AR 10+ can${tgtGR<=20?' achieve':' struggle to achieve'} this.`;
+  document.getElementById('mission-callout').innerHTML=tgtGR<=12?
+    `<strong>Very achievable.</strong> A well-built Ranger 600 can fly this mission as-is.`:
+    tgtGR<=18?`<strong>Achievable with good design.</strong> Target AR 10–12 with a clean build. This is your custom glider design goal.`:
+    `<strong>Challenging.</strong> Requires very high aspect ratio wing design and extremely clean airframe. Consider reducing range or increasing altitude.`;
+}
+const GNOTES=[
+  {q:'Glide ratio 1:12 means the glider travels _____ metres forward for every _____ metre it descends.',hint:'Read the ratio directly.',answer:'12 metres forward for every 1 metre descended'},
+  {q:'The three factors that most improve glide ratio are: better _____, higher _____, and cleaner _____.',hint:'One is the wing curve shape, one is how long/thin the wing is, one is build quality.',answer:'airfoil (wing shape), higher aspect ratio (longer thinner wing), and cleaner airframe (less parasitic drag)'},
+  {q:'You need to silently cover 2 km from 150 m altitude. Required minimum glide ratio = _____ ÷ _____ = _____.',hint:'Divide target range by available altitude.',answer:'2000 ÷ 150 = 13.3, so you need at least 1:13.3, target 1:17 for safety margin'},
+  {q:'Why should you always design for BETTER glide ratio than the minimum required for a mission?',hint:'Think about real-world conditions vs theoretical.',answer:'Safety margin — real conditions (wind, thermals, build imperfections) always reduce actual glide ratio below theoretical. A 30% margin is typical.'},
+  {q:'A glider achieves 3,200 m of range from 200 m altitude with motor off. Its actual glide ratio = ___.',hint:'Divide range by altitude.',answer:'1:16 — because 3200 ÷ 200 = 16. Expressed as glide ratio 1:16.'}
+];
+const QUIZZES=[
+  {q:'A glider has glide ratio 1:14 and is at 350 m altitude with the motor off. How far does it travel?',opts:['350 m','1,400 m','4,900 m','14,000 m'],c:2,good:'4,900 m — Range = altitude × ratio number = 350 × 14 = 4,900 m.',miss:'Range = altitude × glide ratio number = 350 × 14 = 4,900 metres.'},
+  {q:'Glider A: 1:10 glide. Glider B: 1:18 glide. Both at 300 m altitude. How much further does B travel?',opts:['8 m','2,400 m','300 m','5,400 m'],c:1,good:'2,400 m — A: 300×10=3,000 m. B: 300×18=5,400 m. Difference = 2,400 m.',miss:'A: 300×10=3,000 m. B: 300×18=5,400 m. Difference = 5,400−3,000 = 2,400 m.'},
+  {q:'You need to silently cover a 4 km target area from a motor-off point at 350 m altitude. What minimum glide ratio do you need?',opts:['1:8','1:11','1:12','1:15'],c:1,good:'At least 1:11.4 — 4000÷350=11.4. So 1:12 is the minimum practical ratio, 1:15+ for safe margin.',miss:'Min glide ratio = range ÷ altitude = 4000 ÷ 350 = 11.4. Round up to 1:12 minimum.'},
+  {q:'Which of these design changes improves glide ratio the most?',opts:['Heavier motor for more thrust','Increasing wingspan from 0.8m to 1.4m (same chord)','Adding more propeller blades','Using a larger battery'],c:1,good:'Increasing wingspan — longer span = higher aspect ratio = dramatically less induced drag = significantly better glide ratio.',miss:'Longer wingspan = higher aspect ratio = less induced drag = better glide ratio. It is the single most effective improvement.'},
+  {q:'Your foam-board glider achieves a measured glide ratio of 1:11. For your ISR mission you need 1:14. You decide to extend the wingspan by 40%. Approximately what glide ratio would you expect?',opts:['1:11 (no change)','About 1:13–14','Exactly 1:15.4','About 1:20+'],c:1,good:'About 1:13–14 — higher aspect ratio improves glide ratio roughly proportionally to the AR improvement, but not perfectly. A 40% span increase on same chord = 40% higher AR = roughly 15–25% better glide ratio.',miss:'40% more wingspan on same chord = 40% higher AR = roughly 15–25% glide ratio improvement. 11 × 1.2 ≈ 13.2. So 1:13–14 is realistic.'}
+];
+function initVisuals(){updateCmp();updateDragFactors();updateMission();}
+window.onStepShow = function(n) {
+  if (n === 0) updateCmp();
+  if (n === 1) updateDragFactors();
+  if (n === 2) updateMission();
+};
+document.addEventListener('DOMContentLoaded',()=>{
+  stepEngine=new StepEngine(['step-0','step-1','step-2','step-3','step-4']);
+  document.getElementById('gnotes-container').innerHTML=buildGuidedNotes(5,GNOTES);
+  quizEngine=new QuizEngine(QUIZZES,'quiz-container','quiz-dots');
+  setTimeout(initVisuals,80);
+});
+</script>
+</body>
+</html>

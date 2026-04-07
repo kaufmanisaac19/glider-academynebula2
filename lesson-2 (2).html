@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1117">
+<style>
+/* ── GLIDER ACADEMY — shared.css ── */
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--card:#1c2128;--card2:#252c36;
+  --blue:#2f81f7;--bd:rgba(47,129,247,0.15);--bs:rgba(47,129,247,0.3);
+  --teal:#3fb950;--td:rgba(63,185,80,0.12);
+  --amber:#d29922;--ad:rgba(210,153,34,0.12);
+  --coral:#f85149;--cd:rgba(248,81,73,0.12);
+  --purple:#a371f7;--pd:rgba(163,113,247,0.12);
+  --text:#e6edf3;--t2:#8b949e;--t3:#484f58;
+  --border:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);
+  --r:12px;--rs:8px;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{padding-bottom:24px}
+
+/* HEADER */
+.app-header{padding:calc(var(--st)+10px) 14px 10px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+.back-link{color:var(--blue);font-size:15px;text-decoration:none;white-space:nowrap;padding:4px 0}
+.header-info{flex:1;min-width:0}
+.header-title{font-size:16px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-sub{font-size:11px;color:var(--t3);margin-top:1px}
+.xp-pill{font-size:12px;background:var(--bd);color:var(--blue);border:1px solid var(--bs);padding:3px 10px;border-radius:99px;font-weight:600;white-space:nowrap}
+
+/* PROGRESS STEPS */
+.step-bar{display:flex;gap:4px;padding:12px 14px 0}
+.step-pip{flex:1;height:4px;border-radius:2px;background:var(--bg3);transition:background .3s;cursor:pointer}
+.step-pip.done{background:var(--teal)}
+.step-pip.active{background:var(--blue);opacity:.6}
+.step-label{font-size:12px;color:var(--t2);padding:6px 14px 14px;font-weight:500}
+
+/* CONTENT */
+.lesson-content{padding:16px 14px}
+.big-idea{font-size:20px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:12px}
+.body-text{font-size:15px;color:var(--t2);line-height:1.8;margin-bottom:12px}
+.body-text strong{color:var(--text);font-weight:600}
+
+/* CALLOUTS */
+.callout{border-left:3px solid var(--blue);background:var(--bd);border-radius:0 var(--rs) var(--rs) 0;padding:11px 13px;margin:12px 0;font-size:14px;color:var(--t2);line-height:1.7}
+.callout strong{color:var(--text);font-weight:600}
+.callout.teal{border-left-color:var(--teal);background:var(--td)}
+.callout.amber{border-left-color:var(--amber);background:var(--ad)}
+.callout.coral{border-left-color:var(--coral);background:var(--cd)}
+.callout.purple{border-left-color:var(--purple);background:var(--pd)}
+
+/* SECTION LABELS */
+.sec-label{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);padding:16px 14px 8px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin:0 12px 12px;overflow:hidden}
+.card-pad{padding:13px 14px}
+
+/* INTERACTIVE CANVAS */
+.vis-wrap{margin:0 12px 12px}
+.vis-canvas{width:100%;border-radius:var(--rs);border:1px solid var(--border);display:block;background:var(--bg3)}
+
+/* CONTROLS */
+.ctrl-group{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;margin:0 12px 12px}
+.ctrl-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ctrl-row:last-child{margin-bottom:0}
+.ctrl-label{font-size:13px;color:var(--t2);min-width:100px;flex-shrink:0}
+.ctrl-val{font-size:13px;font-weight:700;min-width:58px;text-align:right;color:var(--text)}
+input[type=range]{-webkit-appearance:none;flex:1;height:4px;border-radius:2px;background:var(--bg3);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--blue);cursor:pointer;border:2px solid var(--bg)}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 12px;margin-bottom:12px}
+.stat-row.two{grid-template-columns:repeat(2,1fr)}
+.stat{background:var(--bg3);border-radius:var(--rs);padding:10px 8px;text-align:center}
+.stat-label{font-size:10px;color:var(--t3);margin-bottom:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.stat-val{font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.stat-unit{font-size:10px;color:var(--t2);margin-left:2px}
+
+/* MODE BUTTONS */
+.mode-btns{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px;margin-bottom:12px}
+.mode-btn{font-size:12px;padding:6px 12px;border-radius:99px;border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.mode-btn.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* GUIDED NOTES */
+.gnote-wrap{background:rgba(210,153,34,0.06);border:1px solid rgba(210,153,34,0.2);border-radius:var(--r);padding:14px;margin:0 12px 12px}
+.gnote-header{font-size:12px;font-weight:700;color:var(--amber);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.gnote-item{margin-bottom:14px}
+.gnote-item:last-child{margin-bottom:0}
+.gnote-q{font-size:14px;color:var(--text);line-height:1.55;margin-bottom:6px}
+.gnote-hint{font-size:12px;color:var(--t3);margin-bottom:6px;font-style:italic}
+.gnote-input{width:100%;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.gnote-input:focus{border-color:var(--amber)}
+.gnote-input.has-value{border-color:rgba(210,153,34,0.4)}
+.gnote-reveal{font-size:12px;color:var(--amber);background:none;border:1px solid rgba(210,153,34,0.3);border-radius:99px;padding:3px 10px;cursor:pointer;margin-top:5px}
+.gnote-answer{font-size:13px;color:var(--teal);background:var(--td);border-radius:var(--rs);padding:9px 11px;margin-top:6px;line-height:1.6;display:none}
+
+/* QUIZ */
+.quiz-wrap{padding:0 12px 12px}
+.quiz-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.quiz-num{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.05em}
+.quiz-score{font-size:11px;color:var(--teal);font-weight:600}
+.quiz-q{font-size:15px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:12px}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{font-size:14px;padding:11px 13px;border:1px solid var(--b2);border-radius:var(--rs);background:transparent;color:var(--text);cursor:pointer;text-align:left;transition:background .1s;line-height:1.4}
+.quiz-opt:active{background:var(--bg3)}
+.quiz-opt.correct{background:var(--td);border-color:var(--teal);color:#3fb950;font-weight:500}
+.quiz-opt.wrong{background:var(--cd);border-color:var(--coral);color:#f85149}
+.quiz-opt.reveal{background:var(--td);border-color:var(--teal);color:#3fb950}
+.quiz-feedback{font-size:13px;color:var(--t2);margin-top:10px;line-height:1.65;display:none;padding:10px 11px;background:var(--bg3);border-radius:var(--rs)}
+.quiz-feedback.show{display:block}
+.fb-ok{color:var(--teal);font-weight:700}.fb-bad{color:var(--coral);font-weight:700}
+.quiz-dots{display:flex;gap:5px;padding:0 12px;margin-bottom:8px}
+.quiz-dot{width:9px;height:9px;border-radius:50%;background:var(--bg3);cursor:pointer;transition:transform .1s}
+.quiz-dot:active{transform:scale(1.4)}
+.quiz-dot.right{background:var(--teal)}.quiz-dot.wrong{background:var(--coral)}.quiz-dot.current{background:var(--blue)}
+.quiz-nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px}
+.quiz-nav-btn{font-size:13px;padding:8px 16px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;white-space:nowrap}
+.quiz-nav-btn:disabled{opacity:.25;cursor:default}
+.quiz-nav-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* SCORE SCREEN */
+.score-screen{text-align:center;padding:32px 20px}
+.score-big{font-size:64px;font-weight:800;color:var(--text);line-height:1}
+.score-pct{font-size:15px;color:var(--t2);margin:4px 0 16px}
+.score-msg{font-size:18px;font-weight:700;margin-bottom:6px}
+.score-sub{font-size:14px;color:var(--t2);line-height:1.65;margin-bottom:24px;max-width:320px;margin-left:auto;margin-right:auto}
+.btn-group{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.btn{font-size:14px;font-weight:500;padding:11px 20px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--text);cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-teal{background:var(--teal);color:#000;border-color:var(--teal)}
+
+/* STEP NAV */
+.step-nav{display:flex;gap:8px;padding:8px 12px 16px;position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border)}
+.step-nav .btn{flex:1}
+
+/* BADGES */
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
+
+/* TOAST */
+@keyframes toast-up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+.toast{position:fixed;top:64px;right:14px;padding:6px 14px;border-radius:99px;font-weight:700;font-size:13px;z-index:999;pointer-events:none;animation:toast-up 1s ease forwards}
+
+/* UTIL */
+.text-center{text-align:center}
+.mt-8{margin-top:8px}
+.mb-0{margin-bottom:0}
+
+</style>
+<title>Lesson 2 — Forces, Gravity & Thrust</title>
+</head>
+<body>
+<div class="app-header">
+  <a class="back-link" href="index.html">← Home</a>
+  <div class="header-info">
+    <div class="header-title">Forces, Gravity & Thrust</div>
+    <div class="header-sub">Lesson 2 · Physics</div>
+  </div>
+  <div class="xp-pill" id="xp-pill">0 XP</div>
+</div>
+
+<div class="step-bar">
+  <div class="step-pip active" onclick="stepEngine.show(0)"></div>
+  <div class="step-pip" onclick="stepEngine.show(1)"></div>
+  <div class="step-pip" onclick="stepEngine.show(2)"></div>
+  <div class="step-pip" onclick="stepEngine.show(3)"></div>
+  <div class="step-pip" onclick="stepEngine.show(4)"></div>
+  <div class="step-pip" onclick="stepEngine.show(5)"></div>
+</div>
+<div class="step-label" id="step-label">Part 1 of 6</div>
+
+<!-- STEP 0: What is a force -->
+<div id="step-0">
+  <div class="lesson-content">
+    <div class="tag" style="background:#2f81f722;color:#2f81f7;margin-bottom:10px">The big idea</div>
+    <div class="big-idea">A force is any push or pull. That's all it ever is.</div>
+    <div class="body-text">When you push a door open — force. When a magnet pulls a paperclip — force. When the earth pulls everything downward — force, and we call it gravity. Forces are what cause things to start moving, stop moving, speed up, or slow down. Without a force, an object just keeps doing whatever it was already doing forever.</div>
+    <div class="callout"><strong>Newton's first law in plain English:</strong> An object stays still until a force acts on it. A moving object keeps moving at the same speed in the same direction until a force acts on it. Forces are the only things that change motion.</div>
+    <div class="callout teal"><strong>Why this matters:</strong> Every single thing your flight controller does is about managing forces. It adjusts motor speed and control surfaces to control the four forces acting on your glider every second of every flight.</div>
+  </div>
+  <div class="sec-label">Drop demo — tap to drop, watch gravity act</div>
+  <canvas class="vis-canvas" id="cv-drop" height="160" style="margin:0 12px 0;width:calc(100% - 24px)"></canvas>
+  <div class="mode-btns">
+    <button class="mode-btn on" id="btn-drop-drone" onclick="dropObject('drone')">Drop glider</button>
+    <button class="mode-btn" id="btn-drop-ball" onclick="dropObject('ball')">Drop ball</button>
+    <button class="mode-btn" id="btn-drop-both" onclick="dropObject('both')">Drop both</button>
+    <button class="mode-btn" id="btn-drop-reset" onclick="resetDrop()">Reset</button>
+  </div>
+  <div class="callout amber"><strong>Key observation:</strong> Both objects fall at the same rate — gravity pulls everything downward with the same acceleration regardless of weight. The only difference in real life is air resistance.</div>
+  <div class="step-nav">
+    <button class="btn btn-primary" onclick="stepEngine.next()">Next: Gravity →</button>
+  </div>
+</div>
+
+<!-- STEP 1: Gravity -->
+<div id="step-1" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#2f81f722;color:#2f81f7;margin-bottom:10px">Gravity</div>
+    <div class="big-idea">Gravity is the earth pulling everything toward its center — constantly, downward, always.</div>
+    <div class="body-text">The heavier an object, the harder gravity pulls it. We measure force in <strong>Newtons (N)</strong>. On Earth, gravity pulls with about 9.8 N for every kilogram of mass. A 2 kg glider gets pulled down with 19.6 N — twice as hard as a 1 kg glider. Drag the slider to see the gravity arrow grow with mass.</div>
+    <div class="callout"><strong>Newtons explained:</strong> 1 Newton is roughly the force of a small apple resting on your hand. Your glider weighing 0.5 kg has gravity pulling it down with about 4.9 N — 4.9 apples' worth of force, constantly downward.</div>
+  </div>
+  <div class="sec-label">Mass slider — gravity arrow grows with weight</div>
+  <canvas class="vis-canvas" id="cv-grav" height="180" style="margin:0 12px 0;width:calc(100% - 24px)"></canvas>
+  <div class="ctrl-group">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Glider mass</span>
+      <input type="range" min="1" max="5" value="2" step="1" id="sl-mass" oninput="updateGravity()">
+      <span class="ctrl-val" id="cv-mass">2 kg</span>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-label">Mass</div><div class="stat-val" id="sv-mass">2<span class="stat-unit">kg</span></div></div>
+    <div class="stat"><div class="stat-label">Gravity pull</div><div class="stat-val" id="sv-grav">19.6<span class="stat-unit">N</span></div></div>
+    <div class="stat"><div class="stat-label">Arrow size</div><div class="stat-val" id="sv-arrow-sz" style="font-size:14px">medium</div></div>
+  </div>
+  <div class="callout teal"><strong>The weight spiral:</strong> Every gram you add to your glider is weight your motor has to lift. Heavier → needs more thrust → needs bigger motor → needs bigger battery → which adds even more weight. Keeping your build light is the most important design principle you'll learn.</div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Next: Thrust →</button>
+  </div>
+</div>
+
+<!-- STEP 2: Thrust -->
+<div id="step-2" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#2f81f722;color:#2f81f7;margin-bottom:10px">Thrust</div>
+    <div class="big-idea">Thrust is the force your propeller creates by pushing air backward — which pushes the aircraft forward and upward.</div>
+    <div class="body-text">When a propeller spins, it pushes air backward. By Newton's third law — every action has an equal and opposite reaction — the aircraft gets pushed forward. The faster the propeller spins, the more air it moves per second, and the more thrust it creates. Drag the throttle slider and watch thrust fight gravity.</div>
+    <div class="callout"><strong>The hover point:</strong> When thrust exactly equals the downward pull of gravity, the aircraft neither rises nor falls. This is hover. Your future autopilot adjusts motor speed hundreds of times per second hunting for this balance point.</div>
+  </div>
+  <div class="sec-label">Throttle slider — find the hover point</div>
+  <canvas class="vis-canvas" id="cv-thrust" height="200" style="margin:0 12px 0;width:calc(100% - 24px)"></canvas>
+  <div class="ctrl-group">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Throttle</span>
+      <input type="range" min="0" max="100" value="40" step="1" id="sl-throttle" oninput="updateThrust()">
+      <span class="ctrl-val" id="cv-throttle">40%</span>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-label">Thrust (↑)</div><div class="stat-val" id="sv-thrust">—<span class="stat-unit">N</span></div></div>
+    <div class="stat"><div class="stat-label">Gravity (↓)</div><div class="stat-val">19.6<span class="stat-unit">N</span></div></div>
+    <div class="stat"><div class="stat-label">Result</div><div class="stat-val" id="sv-result" style="font-size:14px">—</div></div>
+  </div>
+  <div class="callout amber" id="thrust-callout">Drag the slider upward and watch the balance point.</div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Next: All 4 forces →</button>
+  </div>
+</div>
+
+<!-- STEP 3: Four forces -->
+<div id="step-3" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#2f81f722;color:#2f81f7;margin-bottom:10px">Four forces</div>
+    <div class="big-idea">Every flying object deals with exactly four forces — all at once, all the time.</div>
+    <div class="body-text">You've met gravity and thrust. The other two: <strong>Drag</strong> is air resistance — it pushes back against any object moving through air. <strong>Lift</strong> is the upward force generated by the wing shape as it moves through air. Toggle each force off below and watch what happens to the aircraft.</div>
+    <div class="callout"><strong>Fixed-wing advantage:</strong> A quadcopter must generate all of its upward force with thrust alone — very inefficient. Your glider uses its wing to generate lift, carrying most of the aircraft weight. The motor only needs to overcome drag. This is why gliders can fly for so much longer on the same battery.</div>
+  </div>
+  <div class="sec-label">Toggle forces on and off</div>
+  <canvas class="vis-canvas" id="cv-four" height="200" style="margin:0 12px 0;width:calc(100% - 24px)"></canvas>
+  <div class="mode-btns">
+    <button class="mode-btn on" id="btn-f-thrust" onclick="toggleForce('thrust')">Thrust ON</button>
+    <button class="mode-btn on" id="btn-f-gravity" onclick="toggleForce('gravity')">Gravity ON</button>
+    <button class="mode-btn on" id="btn-f-drag" onclick="toggleForce('drag')">Drag ON</button>
+    <button class="mode-btn on" id="btn-f-lift" onclick="toggleForce('lift')">Lift ON</button>
+  </div>
+  <div class="callout amber" id="four-callout"><strong>All four active:</strong> Normal flight. Thrust pushes forward, gravity pulls down, drag resists forward motion, lift counteracts gravity. When balanced, the glider cruises steadily.</div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Guided notes →</button>
+  </div>
+</div>
+
+<!-- STEP 4: Guided notes -->
+<div id="step-4" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#d2992222;color:#d29922;margin-bottom:10px">Guided notes</div>
+    <div class="big-idea">Lock in what you just learned.</div>
+    <div class="body-text">Fill these in from memory. If you're stuck, use the hint. Your answers save automatically.</div>
+  </div>
+  <div id="gnotes-container"></div>
+  <div class="step-nav">
+    <button class="btn" onclick="stepEngine.prev()">← Back</button>
+    <button class="btn btn-primary" onclick="stepEngine.next()">Quiz →</button>
+  </div>
+</div>
+
+<!-- STEP 5: Quiz -->
+<div id="step-5" style="display:none">
+  <div class="lesson-content">
+    <div class="tag" style="background:#d2992222;color:#d29922;margin-bottom:10px">Practice — 5 questions</div>
+    <div class="big-idea">Test your understanding.</div>
+    <div class="body-text">Questions get harder. Use ← Back to revisit any question you've answered.</div>
+  </div>
+  <div class="quiz-dots" id="quiz-dots"></div>
+  <div class="quiz-wrap" id="quiz-container"></div>
+</div>
+
+<script>
+// ── GLIDER ACADEMY — shared.js ──
+const GA_KEY = 'glider_academy_v5';
+
+const GA = {
+  // ── STATE ──────────────────────────────────────────────
+  state: {
+    xp: 0, streak: 0, lastStudy: null,
+    done: [0,1,2],
+    notes: {},       // { lessonId: { 'gn0': 'answer', ... } }
+    quizBest: {}     // { lessonId: score }
+  },
+
+  // ── STORAGE ────────────────────────────────────────────
+  save() {
+    try { localStorage.setItem(GA_KEY, JSON.stringify(this.state)); } catch(e) {}
+  },
+
+  load() {
+    try {
+      const raw = localStorage.getItem(GA_KEY);
+      if (raw) {
+        const p = JSON.parse(raw);
+        if (Array.isArray(p.done)) this.state.done = p.done;
+        if (typeof p.xp === 'number') this.state.xp = p.xp;
+        if (typeof p.streak === 'number') this.state.streak = p.streak;
+        if (p.lastStudy) this.state.lastStudy = p.lastStudy;
+        if (p.notes && typeof p.notes === 'object') this.state.notes = p.notes;
+        if (p.quizBest && typeof p.quizBest === 'object') this.state.quizBest = p.quizBest;
+      }
+    } catch(e) {}
+    // Always ensure first 3 lessons marked done
+    [0,1,2].forEach(i => { if (!this.state.done.includes(i)) this.state.done.push(i); });
+  },
+
+  // ── XP & STREAK ────────────────────────────────────────
+  addXP(n) {
+    this.state.xp += n;
+    this.save();
+    this.showToast('+' + n + ' XP', '#3fb950', '#000');
+    this.updateXPPill();
+  },
+
+  markStudied() {
+    const td = new Date().toDateString();
+    const yd = new Date(Date.now() - 86400000).toDateString();
+    if (this.state.lastStudy !== td) {
+      this.state.streak = this.state.lastStudy === yd ? this.state.streak + 1 : 1;
+      this.state.lastStudy = td;
+      this.save();
+    }
+  },
+
+  completeLesson(id, score, total) {
+    const isNew = !this.state.done.includes(id);
+    if (isNew && score >= Math.ceil(total * 0.6)) {
+      this.state.done.push(id);
+      this.state.quizBest[id] = score;
+      this.save();
+      this.addXP(50);
+      return true;
+    }
+    if (score > (this.state.quizBest[id] || 0)) {
+      this.state.quizBest[id] = score;
+      this.save();
+    }
+    return isNew && score >= Math.ceil(total * 0.6);
+  },
+
+  // ── NOTES ──────────────────────────────────────────────
+  saveNote(lessonId, key, val) {
+    if (!this.state.notes[lessonId]) this.state.notes[lessonId] = {};
+    this.state.notes[lessonId][key] = val;
+    this.save();
+  },
+
+  getNote(lessonId, key) {
+    return (this.state.notes[lessonId] || {})[key] || '';
+  },
+
+  // ── UI HELPERS ─────────────────────────────────────────
+  showToast(text, bg, color) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = text;
+    el.style.background = bg || 'var(--teal)';
+    el.style.color = color || '#000';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1050);
+  },
+
+  updateXPPill() {
+    const el = document.getElementById('xp-pill');
+    if (el) el.textContent = this.state.xp + ' XP';
+  },
+
+  isAvailable(id) {
+    return this.state.done.includes(id) || id === 0 ||
+      this.state.done.includes(id - 1) ||
+      id <= Math.max(-1, ...this.state.done) + 1;
+  }
+};
+
+// ── GUIDED NOTES COMPONENT ────────────────────────────────
+function buildGuidedNotes(lessonId, notes) {
+  const saved = GA.state.notes[lessonId] || {};
+  let html = `<div class="gnote-wrap">
+    <div class="gnote-header">✏️ Guided notes — fill in as you read</div>`;
+  notes.forEach((n, i) => {
+    const val = saved['gn' + i] || '';
+    html += `<div class="gnote-item">
+      <div class="gnote-q">${n.q}</div>
+      <div class="gnote-hint">Hint: ${n.hint}</div>
+      <input type="text" class="gnote-input${val ? ' has-value' : ''}" id="gn-${i}"
+        value="${escHTML(val)}" placeholder="Your answer..."
+        oninput="onGNote(${i},this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div style="display:flex;align-items:center;gap:8px;margin-top:5px">
+        <button class="gnote-reveal" onclick="toggleAnswer(${i})">Show answer</button>
+        <span id="gns-${i}" style="font-size:11px;color:var(--t3);opacity:0;transition:opacity .3s">Saved ✓</span>
+      </div>
+      <div class="gnote-answer" id="gna-${i}">${n.answer}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function onGNote(i, val) {
+  const inp = document.getElementById('gn-' + i);
+  if (inp) inp.classList.toggle('has-value', val.length > 0);
+  GA.saveNote(window.LESSON_ID, 'gn' + i, val);
+  const ns = document.getElementById('gns-' + i);
+  if (ns) { ns.style.opacity = '1'; setTimeout(() => ns.style.opacity = '0', 1400); }
+}
+
+function toggleAnswer(i) {
+  const el = document.getElementById('gna-' + i);
+  if (el) el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function escHTML(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── QUIZ ENGINE ───────────────────────────────────────────
+class QuizEngine {
+  constructor(quizzes, containerId, dotsId) {
+    this.quizzes = quizzes;
+    this.container = document.getElementById(containerId);
+    this.dotsEl = document.getElementById(dotsId);
+    this.current = 0;
+    this.scores = new Array(quizzes.length).fill(null);
+    this.history = new Array(quizzes.length).fill(null);
+    this.answered = false;
+    this.onComplete = null;
+    this.buildDots();
+    this.render();
+  }
+
+  buildDots() {
+    if (!this.dotsEl) return;
+    this.dotsEl.innerHTML = this.quizzes.map((_, i) =>
+      `<div class="quiz-dot" id="qd${i}" onclick="quizEngine.jumpTo(${i})"></div>`
+    ).join('');
+    this.updateDots();
+  }
+
+  updateDots() {
+    this.quizzes.forEach((_, i) => {
+      const d = document.getElementById('qd' + i);
+      if (!d) return;
+      if (this.scores[i] === true) d.className = 'quiz-dot right';
+      else if (this.scores[i] === false) d.className = 'quiz-dot wrong';
+      else if (i === this.current) d.className = 'quiz-dot current';
+      else d.className = 'quiz-dot';
+    });
+  }
+
+  render() {
+    if (!this.container) return;
+    if (this.current >= this.quizzes.length) { this.showScore(); return; }
+    const q = this.quizzes[this.current];
+    const alreadyAnswered = this.history[this.current] !== null;
+    const rightSoFar = this.scores.filter(s => s === true).length;
+    this.answered = alreadyAnswered;
+
+    this.container.innerHTML = `
+      <div class="quiz-block">
+        <div class="quiz-meta">
+          <span class="quiz-num">Q${this.current + 1} / ${this.quizzes.length}</span>
+          <span class="quiz-score">${rightSoFar} correct</span>
+        </div>
+        <div class="quiz-q">${q.q}</div>
+        <div class="quiz-opts">
+          ${q.opts.map((o, i) => `<button class="quiz-opt" id="qo${i}" onclick="quizEngine.answer(${i})">${o}</button>`).join('')}
+        </div>
+        <div class="quiz-feedback" id="qfb"></div>
+        <div class="quiz-nav-row">
+          <button class="quiz-nav-btn" ${this.current === 0 ? 'disabled' : ''} onclick="quizEngine.prev()">← Back</button>
+          <span style="font-size:12px;color:var(--t3)">${this.current + 1} of ${this.quizzes.length}</span>
+          <button class="quiz-nav-btn primary" id="qnext" style="display:none" onclick="quizEngine.next()">Next →</button>
+        </div>
+      </div>`;
+
+    // Restore previously answered state
+    if (alreadyAnswered) {
+      const prev = this.history[this.current];
+      document.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+      document.getElementById('qo' + prev).classList.add(prev === q.c ? 'correct' : 'wrong');
+      if (prev !== q.c) document.getElementById('qo' + q.c).classList.add('reveal');
+      const fb = document.getElementById('qfb'); fb.classList.add('show');
+      fb.innerHTML = `<span class="${prev === q.c ? 'fb-ok' : 'fb-bad'}">${prev === q.c ? 'Correct.' : 'Not quite.'}</span> ${prev === q.c ? q.good : q.miss}`;
+      const nb = document.getElementById('qnext'); if (nb) nb.style.display = 'block';
+    }
+    this.updateDots();
+  }
+
+  answer(i) {
+    if (this.answered) return;
+    this.answered = true;
+    const q = this.quizzes[this.current];
+    document.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+    const ok = i === q.c;
+    document.getElementById('qo' + i).classList.add(ok ? 'correct' : 'wrong');
+    if (!ok) document.getElementById('qo' + q.c).classList.add('reveal');
+    const fb = document.getElementById('qfb'); fb.classList.add('show');
+    fb.innerHTML = `<span class="${ok ? 'fb-ok' : 'fb-bad'}">${ok ? 'Correct.' : 'Not quite.'}</span> ${ok ? q.good : q.miss}`;
+    if (this.scores[this.current] === null) {
+      this.scores[this.current] = ok;
+      if (ok) GA.addXP(10);
+    }
+    this.history[this.current] = i;
+    this.updateDots();
+    const nb = document.getElementById('qnext'); if (nb) nb.style.display = 'block';
+    // Auto advance after delay
+    setTimeout(() => this.next(), 2400);
+  }
+
+  next() {
+    this.current++;
+    this.render();
+  }
+
+  prev() {
+    if (this.current === 0) return;
+    this.current--;
+    this.render();
+  }
+
+  jumpTo(i) {
+    const maxReach = Math.max(this.current, ...this.history.map((h, idx) => h !== null ? idx : -1));
+    if (i <= maxReach + 1) { this.current = i; this.render(); }
+  }
+
+  showScore() {
+    const right = this.scores.filter(s => s === true).length;
+    const total = this.quizzes.length;
+    const pct = Math.round(right / total * 100);
+    let msg, sub, color;
+    if (right === total) { msg = 'Perfect score!'; sub = 'Flawless. Every concept is solid. Move forward with confidence.'; color = 'var(--teal)'; }
+    else if (right >= Math.ceil(total * 0.6)) { msg = 'Good work.'; sub = 'Core ideas are there. Review any callouts you\'re unsure about before the next lesson.'; color = 'var(--blue)'; }
+    else { msg = 'Review and retry.'; sub = 'Scroll back through the lesson content and try again. The concepts need one more pass.'; color = 'var(--amber)'; }
+
+    GA.completeLesson(window.LESSON_ID, right, total);
+    if (this.onComplete) this.onComplete(right, total);
+
+    const nextId = window.LESSON_ID + 1;
+    const nextFile = `lesson-${nextId + 1}.html`;
+
+    this.container.innerHTML = `
+      <div class="score-screen">
+        <div class="score-big" style="color:${color}">${right}/${total}</div>
+        <div class="score-pct">${pct}% correct</div>
+        <div class="score-msg">${msg}</div>
+        <div class="score-sub">${sub}</div>
+        <div class="btn-group">
+          ${right < total ? `<button class="btn" onclick="quizEngine.retry()">← Retry</button>` : ''}
+          ${nextId < 13 && right >= Math.ceil(total * 0.6) ? `<a class="btn btn-primary" href="${nextFile}">Lesson ${nextId + 1} →</a>` : ''}
+          <a class="btn" href="index.html">Home</a>
+        </div>
+      </div>`;
+  }
+
+  retry() {
+    this.current = 0;
+    this.scores = new Array(this.quizzes.length).fill(null);
+    this.history = new Array(this.quizzes.length).fill(null);
+    this.answered = false;
+    this.buildDots();
+    this.render();
+  }
+}
+
+let quizEngine;
+
+// ── STEP ENGINE ───────────────────────────────────────────
+class StepEngine {
+  constructor(steps) {
+    this.steps = steps;
+    this.current = 0;
+    this.completed = new Set();
+  }
+
+  show(n) {
+    this.steps.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = i === n ? 'block' : 'none';
+    });
+    this.current = n;
+    if (n > 0) this.completed.add(n - 1);
+    this.updatePips();
+    window.scrollTo(0, 0);
+    // Fire onShow callback after layout so canvases have correct offsetWidth
+    if (typeof window.onStepShow === 'function') {
+      requestAnimationFrame(() => setTimeout(() => window.onStepShow(n), 30));
+    }
+  }
+
+  next() { if (this.current < this.steps.length - 1) this.show(this.current + 1); }
+  prev() { if (this.current > 0) this.show(this.current - 1); }
+
+  updatePips() {
+    document.querySelectorAll('.step-pip').forEach((p, i) => {
+      p.className = 'step-pip' + (i < this.current ? ' done' : i === this.current ? ' active' : '');
+    });
+    const lbl = document.getElementById('step-label');
+    if (lbl) lbl.textContent = `Part ${this.current + 1} of ${this.steps.length}`;
+  }
+}
+
+let stepEngine;
+
+// ── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  GA.load();
+  GA.markStudied();
+  GA.updateXPPill();
+});
+
+</script>
+<script>
+window.LESSON_ID = 1;
+
+// ── DROP DEMO ─────────────────────────────────────────────
+const dropObjs = [
+  {x:0.35, y:30, vy:0, falling:false, type:'drone', color:'#2f81f7'},
+  {x:0.65, y:30, vy:0, falling:false, type:'ball', color:'#f85149'}
+];
+let dropRaf = null;
+
+function drawDrop() {
+  const cv = document.getElementById('cv-drop');
+  const W = cv.offsetWidth||340, H = 160;
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#161b22'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = '#21262d'; ctx.fillRect(0,H-28,W,28);
+  ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(0,H-28);ctx.lineTo(W,H-28);ctx.stroke();
+  dropObjs.forEach(o => {
+    const ox = o.x * W, oy = o.y;
+    if (o.type === 'drone') {
+      ctx.strokeStyle = o.color; ctx.fillStyle = '#161b22'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(ox+16,oy); ctx.lineTo(ox-12,oy-4); ctx.lineTo(ox-16,oy); ctx.lineTo(ox-12,oy+4); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ox-2,oy); ctx.lineTo(ox+8,oy-7); ctx.lineTo(ox+10,oy-6); ctx.lineTo(ox,oy); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ox-2,oy); ctx.lineTo(ox+8,oy+7); ctx.lineTo(ox+10,oy+6); ctx.lineTo(ox,oy); ctx.closePath(); ctx.fill(); ctx.stroke();
+    } else {
+      ctx.fillStyle = o.color; ctx.beginPath(); ctx.arc(ox, oy, 10, 0, Math.PI*2); ctx.fill();
+    }
+    if (o.falling) {
+      ctx.strokeStyle = o.color; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(ox, oy+14); ctx.lineTo(ox, oy+28); ctx.stroke();
+      ctx.fillStyle = o.color; ctx.beginPath(); ctx.moveTo(ox, oy+30); ctx.lineTo(ox-5, oy+22); ctx.lineTo(ox+5, oy+22); ctx.fill();
+    }
+    ctx.fillStyle = o.color; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(o.type === 'drone' ? 'Glider' : 'Ball', ox, oy - 16);
+  });
+}
+
+function dropObject(which) {
+  if (dropRaf) { cancelAnimationFrame(dropRaf); dropRaf = null; }
+  if (which === 'both') { dropObjs[0].falling = true; dropObjs[1].falling = true; }
+  else { dropObjs[which === 'drone' ? 0 : 1].falling = true; }
+  function tick() {
+    dropObjs.forEach(o => {
+      if (!o.falling) return;
+      o.vy += 0.22; o.y += o.vy;
+      const cv = document.getElementById('cv-drop');
+      if (o.y > (cv.offsetHeight||160) - 38) { o.y = (cv.offsetHeight||160) - 38; o.vy = 0; }
+    });
+    drawDrop();
+    dropRaf = requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+function resetDrop() {
+  if (dropRaf) { cancelAnimationFrame(dropRaf); dropRaf = null; }
+  dropObjs[0].y = 30; dropObjs[0].vy = 0; dropObjs[0].falling = false;
+  dropObjs[1].y = 30; dropObjs[1].vy = 0; dropObjs[1].falling = false;
+  drawDrop();
+}
+
+// ── GRAVITY ───────────────────────────────────────────────
+function updateGravity() {
+  const mass = parseInt(document.getElementById('sl-mass').value);
+  document.getElementById('cv-mass').textContent = mass + ' kg';
+  document.getElementById('sv-mass').innerHTML = mass + '<span class="stat-unit">kg</span>';
+  const pull = (mass * 9.8).toFixed(1);
+  document.getElementById('sv-grav').innerHTML = pull + '<span class="stat-unit">N</span>';
+  const sizes = ['','tiny','small','medium','large','very large'];
+  document.getElementById('sv-arrow-sz').textContent = sizes[mass] || 'large';
+  const cv = document.getElementById('cv-grav');
+  const W = cv.offsetWidth||340, H = 180;
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#161b22'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = '#21262d'; ctx.fillRect(0,H-28,W,28);
+  const cx = W/2, cy = 70;
+  // Glider
+  ctx.strokeStyle = '#2f81f7'; ctx.fillStyle = '#161b22'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(cx+18,cy); ctx.lineTo(cx-14,cy-5); ctx.lineTo(cx-18,cy); ctx.lineTo(cx-14,cy+5); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-2,cy); ctx.lineTo(cx+10,cy-9); ctx.lineTo(cx+12,cy-8); ctx.lineTo(cx,cy); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-2,cy); ctx.lineTo(cx+10,cy+9); ctx.lineTo(cx+12,cy+8); ctx.lineTo(cx,cy); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Gravity arrow
+  const arrowLen = 20 + mass * 16;
+  ctx.strokeStyle = '#f85149'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(cx, cy+8); ctx.lineTo(cx, cy+8+arrowLen); ctx.stroke();
+  ctx.fillStyle = '#f85149'; ctx.beginPath(); ctx.moveTo(cx, cy+8+arrowLen+8); ctx.lineTo(cx-7, cy+8+arrowLen); ctx.lineTo(cx+7, cy+8+arrowLen); ctx.fill();
+  ctx.font = 'bold 13px sans-serif'; ctx.fillStyle = '#f85149'; ctx.textAlign = 'right';
+  ctx.fillText(pull + ' N ↓', cx - 12, cy + 8 + arrowLen/2 + 4);
+  ctx.font = '12px sans-serif'; ctx.fillStyle = '#484f58'; ctx.textAlign = 'center';
+  ctx.fillText(mass + ' kg glider', cx, cy - 22);
+}
+
+// ── THRUST ────────────────────────────────────────────────
+function updateThrust() {
+  const pct = parseInt(document.getElementById('sl-throttle').value);
+  document.getElementById('cv-throttle').textContent = pct + '%';
+  const grav = 19.6, thrust = +(pct * 0.392).toFixed(1), diff = +(thrust - grav).toFixed(1);
+  document.getElementById('sv-thrust').innerHTML = thrust + '<span class="stat-unit">N</span>';
+  let result, callout, color;
+  if (Math.abs(diff) < 1) {
+    result = 'Hovering'; color = '#3fb950';
+    callout = '<strong>Balanced — hovering!</strong> Thrust ≈ gravity. Net force ≈ 0. The glider floats in place. A real autopilot fights to hold this balance hundreds of times per second.';
+  } else if (diff > 0) {
+    result = 'Climbing'; color = '#2f81f7';
+    callout = '<strong>Thrust is winning.</strong> Thrust > gravity by ' + diff.toFixed(1) + ' N. The glider accelerates upward. The bigger the difference, the faster it climbs.';
+  } else {
+    result = 'Sinking'; color = '#f85149';
+    callout = '<strong>Gravity is winning.</strong> Gravity > thrust by ' + Math.abs(diff).toFixed(1) + ' N. The glider descends. If this happens at altitude without enough height to recover — that\'s a crash.';
+  }
+  document.getElementById('sv-result').innerHTML = `<span style="color:${color}">${result}</span>`;
+  document.getElementById('thrust-callout').innerHTML = callout;
+  const cv = document.getElementById('cv-thrust');
+  const W = cv.offsetWidth||340, H = 200;
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#161b22'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = '#21262d'; ctx.fillRect(0,H-28,W,28);
+  const droneY = diff > 1 ? 80 : diff < -1 ? 120 : 100;
+  const cx = W/2;
+  // Glider
+  const gc = diff > 1 ? '#2f81f7' : diff < -1 ? '#f85149' : '#3fb950';
+  ctx.strokeStyle = gc; ctx.fillStyle = '#161b22'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(cx+18,droneY); ctx.lineTo(cx-14,droneY-5); ctx.lineTo(cx-18,droneY); ctx.lineTo(cx-14,droneY+5); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-2,droneY); ctx.lineTo(cx+10,droneY-9); ctx.lineTo(cx+12,droneY-8); ctx.lineTo(cx,droneY); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-2,droneY); ctx.lineTo(cx+10,droneY+9); ctx.lineTo(cx+12,droneY+8); ctx.lineTo(cx,droneY); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Propeller spin lines
+  for(let i=0;i<3;i++){
+    const rx=cx+[-22,0,22][i], ry=droneY-10;
+    ctx.strokeStyle='rgba(47,129,247,0.3)'; ctx.lineWidth=1; ctx.setLineDash([2,3]);
+    ctx.beginPath(); ctx.moveTo(rx,ry); ctx.lineTo(rx,ry-10-(pct*0.1)); ctx.stroke(); ctx.setLineDash([]);
+  }
+  // Thrust arrow
+  if (thrust > 0) {
+    const tLen = Math.min(80, thrust * 2);
+    ctx.strokeStyle = '#2f81f7'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(cx, droneY-8); ctx.lineTo(cx, droneY-8-tLen); ctx.stroke();
+    ctx.fillStyle = '#2f81f7'; ctx.beginPath(); ctx.moveTo(cx, droneY-10-tLen); ctx.lineTo(cx-6, droneY-4-tLen); ctx.lineTo(cx+6, droneY-4-tLen); ctx.fill();
+    ctx.font = 'bold 12px sans-serif'; ctx.fillStyle = '#2f81f7'; ctx.textAlign = 'right';
+    ctx.fillText(thrust+'N', cx-10, droneY-8-tLen/2);
+  }
+  // Gravity arrow
+  const gLen = Math.min(80, grav * 2);
+  ctx.strokeStyle = '#f85149'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(cx, droneY+8); ctx.lineTo(cx, droneY+8+gLen); ctx.stroke();
+  ctx.fillStyle = '#f85149'; ctx.beginPath(); ctx.moveTo(cx, droneY+10+gLen); ctx.lineTo(cx-6, droneY+4+gLen); ctx.lineTo(cx+6, droneY+4+gLen); ctx.fill();
+  ctx.font = 'bold 12px sans-serif'; ctx.fillStyle = '#f85149'; ctx.textAlign = 'left';
+  ctx.fillText(grav+'N', cx+10, droneY+8+gLen/2);
+  // Hover label
+  if (Math.abs(diff) < 1) {
+    ctx.font = 'bold 14px sans-serif'; ctx.fillStyle = '#3fb950'; ctx.textAlign = 'center';
+    ctx.fillText('HOVER', cx, droneY - 30);
+  }
+}
+
+// ── FOUR FORCES ───────────────────────────────────────────
+const forces = {thrust:true, gravity:true, drag:true, lift:true};
+function toggleForce(name) {
+  forces[name] = !forces[name];
+  const on = forces[name];
+  const colors = {thrust:'#2f81f7',gravity:'#f85149',drag:'#d29922',lift:'#3fb950'};
+  const btn = document.getElementById('btn-f-'+name);
+  btn.textContent = name.charAt(0).toUpperCase()+name.slice(1)+' '+(on?'ON':'OFF');
+  btn.style.background = on ? colors[name] : '';
+  btn.style.color = on ? '#fff' : '';
+  btn.style.borderColor = on ? colors[name] : '';
+  btn.classList.toggle('on', on);
+  drawFourForces();
+  const active = Object.entries(forces).filter(([,v])=>v).map(([k])=>k);
+  const msgs = {
+    '':'<strong>No forces:</strong> In deep space away from any mass, this is roughly what you\'d have. Nothing moves unless something pushes it.',
+    'gravity':'<strong>Only gravity:</strong> The aircraft falls. No thrust, no lift, nothing to fight gravity. This is what happens when all motors fail simultaneously on a quadcopter.',
+    'thrust':'<strong>Only thrust:</strong> Rocket-like upward acceleration with nothing pulling back. Unrealistic on Earth.',
+    'thrust,gravity':'<strong>Thrust + gravity:</strong> The main vertical battle. More thrust = climb. Equal = hover. Less = descend.',
+    'drag,gravity':'<strong>Drag + gravity:</strong> The aircraft falls while also slowing down horizontally. Like an unpowered aircraft in dense air.',
+    'thrust,drag':'<strong>Thrust + drag:</strong> Horizontal tug of war — no vertical forces. The aircraft accelerates until thrust = drag.',
+    'lift,gravity':'<strong>Lift + gravity:</strong> A pure glider with no motor — the wing fights gravity. If lift = gravity weight, the aircraft glides level.',
+    'thrust,gravity,drag':'<strong>Three forces:</strong> Normal powered flight but with only small wing lift. Thrust must do extra work fighting gravity.',
+    'thrust,gravity,lift':'<strong>Thrust + gravity + lift:</strong> Very close to cruise flight. Just missing drag resistance.',
+    'thrust,gravity,drag,lift':'<strong>All four balanced:</strong> Full cruise flight. This is the target state. Thrust overcomes drag, lift overcomes gravity. Steady speed, steady altitude.'
+  };
+  const key = active.sort().join(',');
+  document.getElementById('four-callout').innerHTML = msgs[key] || '<strong>Forces active: ' + active.join(', ') + '.</strong> Watch how the balance of arrows changes as you toggle each force.';
+}
+
+function drawFourForces() {
+  const cv = document.getElementById('cv-four');
+  const W = cv.offsetWidth||340, H = 200;
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#161b22'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = '#21262d'; ctx.fillRect(0,H-28,W,28);
+  const cx = W/2, cy = 95;
+  ctx.strokeStyle = '#8b949e'; ctx.fillStyle = '#161b22'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(cx+18,cy); ctx.lineTo(cx-14,cy-5); ctx.lineTo(cx-18,cy); ctx.lineTo(cx-14,cy+5); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-2,cy); ctx.lineTo(cx+10,cy-9); ctx.lineTo(cx+12,cy-8); ctx.lineTo(cx,cy); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-2,cy); ctx.lineTo(cx+10,cy+9); ctx.lineTo(cx+12,cy+8); ctx.lineTo(cx,cy); ctx.closePath(); ctx.fill(); ctx.stroke();
+  const L = 55;
+  function arr(x1,y1,x2,y2,col,lbl,lpos) {
+    ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    const ang=Math.atan2(y2-y1,x2-x1);
+    ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-9*Math.cos(ang-0.4),y2-9*Math.sin(ang-0.4));ctx.lineTo(x2-9*Math.cos(ang+0.4),y2-9*Math.sin(ang+0.4));ctx.fill();
+    ctx.font='bold 12px sans-serif';ctx.textAlign=lpos==='left'?'right':'left';
+    ctx.fillText(lbl,lpos==='left'?x1-6:x1+6,(y1+y2)/2+4);
+  }
+  if (forces.thrust) arr(cx, cy, cx+L, cy, '#2f81f7', 'Thrust', 'right');
+  if (forces.gravity) arr(cx, cy, cx, cy+L, '#f85149', 'Gravity', 'right');
+  if (forces.drag) arr(cx, cy, cx-L, cy, '#d29922', 'Drag', 'left');
+  if (forces.lift) arr(cx, cy, cx, cy-L, '#3fb950', 'Lift', 'right');
+}
+
+// ── GUIDED NOTES ──────────────────────────────────────────
+const GNOTES = [
+  {q:'A force is any _____ or _____. Nothing more complicated than that.',hint:'Two words. Think of pushing a door or a magnet pulling.',answer:'push or pull — forces are the only things that change motion.'},
+  {q:'The four forces on a flying aircraft are: _____ (forward), _____ (down), _____ (backward), and _____ (up).',hint:'One from the motor, one from the earth, one from air resistance, one from the wing.',answer:'Thrust (forward), Gravity (down), Drag (backward), Lift (up)'},
+  {q:'At cruise, thrust must _____ drag, and lift must _____ gravity.',hint:'The aircraft is neither speeding up nor climbing.',answer:'equal — both pairs must balance exactly for constant speed and constant altitude'},
+  {q:'A fixed-wing glider is more efficient than a quadcopter because the _____ provides the upward force, so the motor only needs to overcome _____.',hint:'One part of the aircraft, one of the four forces.',answer:'wing (lift) provides the upward force — the motor only needs to overcome drag'},
+  {q:'On Earth, gravity pulls with approximately _____ N for every kilogram of mass. A 0.6 kg glider experiences _____ N of gravity.',hint:'Multiply mass × 9.8.',answer:'9.8 N per kilogram — 0.6 kg × 9.8 = 5.88 N of gravitational pull'}
+];
+
+const QUIZZES = [
+  {q:'A glider is cruising at constant speed and constant altitude. What must be true about the four forces?',
+   opts:['Thrust > drag and lift > gravity','All four forces are perfectly balanced','Thrust > gravity','Only lift and gravity matter during cruise'],c:1,
+   good:'All four balanced — constant speed = zero net horizontal force = thrust equals drag. Constant altitude = zero net vertical force = lift equals gravity.',
+   miss:'Constant speed AND constant altitude means zero net force in both directions. All four forces cancel each other out exactly.'},
+  {q:'You add a heavier battery to your glider (mass increases from 0.5 kg to 0.8 kg). What happens to the gravity force?',
+   opts:['Stays the same','Decreases by 0.3 N','Increases by about 2.94 N','Doubles'],c:2,
+   good:'Increases by 2.94 N — extra 0.3 kg × 9.8 = 2.94 N of additional gravitational pull downward.',
+   miss:'Extra mass × 9.8 = extra gravity force. 0.3 kg × 9.8 = 2.94 N more downward force to overcome.'},
+  {q:'What happens the moment thrust exceeds gravity on a stationary glider sitting on a runway?',
+   opts:['Nothing — it just vibrates','It immediately reaches cruise speed','It begins accelerating upward','Drag disappears'],c:2,
+   good:'It accelerates upward — net upward force causes upward acceleration. Not instant speed — it builds up gradually via acceleration.',
+   miss:'Net upward force = upward acceleration. The glider starts speeding up in the upward direction from that moment.'},
+  {q:'A quadcopter with a dead motor falls straight down. What does your fixed-wing glider do with a dead motor at altitude?',
+   opts:['Also falls straight down','Glides in a long shallow descent — the wing still generates lift','Flies level indefinitely — momentum carries it','Climbs briefly then falls'],c:1,
+   good:'Glides — the wing still generates lift as long as there\'s airflow over it. This is the key advantage of fixed-wing. A quadcopter falls; your glider lands itself.',
+   miss:'The wing continues generating lift from forward airflow. The glider descends gradually at a shallow angle rather than falling. A quadcopter has no wing so it falls.'},
+  {q:'At cruise, your motor only needs to overcome drag — not gravity. Why?',
+   opts:['Gravity disappears at cruise speed','The wing generates lift that counteracts gravity, freeing the motor to only fight drag','The battery is more efficient at cruise','Drag disappears at cruise speed'],c:1,
+   good:'The wing generates lift equal to the weight of the aircraft. The motor is freed from fighting gravity and only needs to overcome drag. Much more efficient than a quadcopter.',
+   miss:'Lift (from the wing) counteracts gravity. So the motor\'s entire job is just overcoming drag — not lifting the aircraft\'s weight. This is why fixed-wing is so efficient.'}
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  stepEngine = new StepEngine(['step-0','step-1','step-2','step-3','step-4','step-5']);
+  document.getElementById('gnotes-container').innerHTML = buildGuidedNotes(1, GNOTES);
+  quizEngine = new QuizEngine(QUIZZES, 'quiz-container', 'quiz-dots');
+  setTimeout(() => { drawDrop(); updateGravity(); updateThrust(); drawFourForces(); }, 80);
+  window.onStepShow = function(n) {
+    if (n === 0) drawDrop();
+    if (n === 1) updateGravity();
+    if (n === 2) updateThrust();
+    if (n === 3) drawFourForces();
+  };
+});
+</script>
+</body>
+</html>

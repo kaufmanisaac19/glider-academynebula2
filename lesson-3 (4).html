@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1117">
+<title>Lesson 3 — Acceleration & the Glide</title>
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--card:#1c2128;--blue:#2f81f7;--bd:rgba(47,129,247,0.15);--bs:rgba(47,129,247,0.3);--teal:#3fb950;--td:rgba(63,185,80,0.12);--amber:#d29922;--ad:rgba(210,153,34,0.12);--coral:#f85149;--cd:rgba(248,81,73,0.12);--text:#e6edf3;--t2:#8b949e;--t3:#484f58;--border:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);--r:12px;--rs:8px;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{padding-bottom:24px}
+.app-header{padding:calc(var(--st)+10px) 14px 10px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+.back-link{color:var(--blue);font-size:15px;text-decoration:none;white-space:nowrap}
+.header-info{flex:1;min-width:0}
+.header-title{font-size:16px;font-weight:600;color:var(--text)}
+.header-sub{font-size:11px;color:var(--t3);margin-top:1px}
+.xp-pill{font-size:12px;background:var(--bd);color:var(--blue);border:1px solid var(--bs);padding:3px 10px;border-radius:99px;font-weight:600;white-space:nowrap}
+.step-bar{display:flex;gap:4px;padding:12px 14px 0}
+.step-pip{flex:1;height:4px;border-radius:2px;background:var(--bg3);cursor:pointer}
+.step-pip.done{background:var(--teal)}.step-pip.active{background:var(--blue);opacity:.6}
+.step-label{font-size:12px;color:var(--t2);padding:6px 14px 14px;font-weight:500}
+.lc{padding:16px 14px}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;margin-bottom:10px}
+.bi{font-size:20px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:12px}
+.bt{font-size:15px;color:var(--t2);line-height:1.8;margin-bottom:12px}
+.bt strong{color:var(--text);font-weight:600}
+.co{border-left:3px solid var(--blue);background:var(--bd);border-radius:0 var(--rs) var(--rs) 0;padding:11px 13px;margin:12px 0;font-size:14px;color:var(--t2);line-height:1.7}
+.co strong{color:var(--text);font-weight:600}
+.co.g{border-left-color:var(--teal);background:var(--td)}.co.a{border-left-color:var(--amber);background:var(--ad)}
+.sl{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);padding:14px 14px 8px}
+.vis{width:calc(100% - 24px);margin:0 12px;border-radius:var(--rs);border:1px solid var(--border);display:block;background:var(--bg3)}
+.cg{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;margin:0 12px 12px}
+.cr{display:flex;align-items:center;gap:10px;margin-bottom:8px}.cr:last-child{margin-bottom:0}
+.cl{font-size:13px;color:var(--t2);min-width:100px;flex-shrink:0}
+.cv{font-size:13px;font-weight:700;min-width:58px;text-align:right;color:var(--text)}
+input[type=range]{-webkit-appearance:none;flex:1;height:4px;border-radius:2px;background:var(--bg3);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--blue);cursor:pointer}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 12px;margin-bottom:12px}
+.st2{background:var(--bg3);border-radius:var(--rs);padding:10px 8px;text-align:center}
+.sl2{font-size:10px;color:var(--t3);margin-bottom:3px;font-weight:600;text-transform:uppercase}
+.sv{font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.su{font-size:10px;color:var(--t2);margin-left:2px}
+.mb-row{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px;margin-bottom:12px}
+.mb{font-size:12px;padding:6px 12px;border-radius:99px;border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer}
+.mb.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.gnw{background:rgba(210,153,34,0.06);border:1px solid rgba(210,153,34,0.2);border-radius:var(--r);padding:14px;margin:0 12px 12px}
+.gnh{font-size:12px;font-weight:700;color:var(--amber);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.gni{margin-bottom:14px}.gni:last-child{margin-bottom:0}
+.gnq{font-size:14px;color:var(--text);line-height:1.55;margin-bottom:6px}
+.gnt{font-size:12px;color:var(--t3);margin-bottom:6px;font-style:italic}
+.gninp{width:100%;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:14px;font-family:inherit;outline:none;-webkit-appearance:none}
+.gninp:focus{border-color:var(--amber)}.gninp.hv{border-color:rgba(210,153,34,0.4)}
+.gnrb{font-size:12px;color:var(--amber);background:none;border:1px solid rgba(210,153,34,0.3);border-radius:99px;padding:3px 10px;cursor:pointer;margin-top:5px}
+.gna{font-size:13px;color:var(--teal);background:var(--td);border-radius:var(--rs);padding:9px 11px;margin-top:6px;line-height:1.6;display:none}
+.qdots{display:flex;gap:5px;padding:0 12px;margin-bottom:8px}
+.qd{width:9px;height:9px;border-radius:50%;background:var(--bg3);cursor:pointer}
+.qd.r{background:var(--teal)}.qd.w{background:var(--coral)}.qd.curr{background:var(--blue)}
+.qw{padding:0 12px 12px}
+.qb{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.qm{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.qn{font-size:11px;font-weight:700;color:var(--t3)}.qs{font-size:11px;color:var(--teal);font-weight:600}
+.qq{font-size:15px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:12px}
+.qop{display:flex;flex-direction:column;gap:8px}
+.qo{font-size:14px;padding:11px 13px;border:1px solid var(--b2);border-radius:var(--rs);background:transparent;color:var(--text);cursor:pointer;text-align:left;line-height:1.4}
+.qo.ok{background:var(--td);border-color:var(--teal);color:#3fb950;font-weight:500}
+.qo.bad{background:var(--cd);border-color:var(--coral);color:#f85149}
+.qo.rev{background:var(--td);border-color:var(--teal);color:#3fb950}
+.qfb{font-size:13px;color:var(--t2);margin-top:10px;line-height:1.65;display:none;padding:10px 11px;background:var(--bg3);border-radius:var(--rs)}
+.qfb.on{display:block}
+.fok{color:var(--teal);font-weight:700}.fbad{color:var(--coral);font-weight:700}
+.qnav{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px}
+.qnb{font-size:13px;padding:8px 16px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;white-space:nowrap}
+.qnb:disabled{opacity:.25;cursor:default}.qnb.p{background:var(--blue);color:#fff;border-color:var(--blue)}
+.score-sc{text-align:center;padding:32px 20px}
+.scn{font-size:60px;font-weight:800;color:var(--text);line-height:1}
+.scp{font-size:15px;color:var(--t2);margin:4px 0 16px}
+.scm{font-size:18px;font-weight:700;margin-bottom:6px}
+.scs{font-size:14px;color:var(--t2);line-height:1.65;margin-bottom:24px}
+.btn-g{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.btn{font-size:14px;font-weight:500;padding:11px 20px;border-radius:var(--rs);border:1px solid var(--b2);background:transparent;color:var(--text);cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btnp{background:var(--blue);color:#fff;border-color:var(--blue)}
+.snav{display:flex;gap:8px;padding:8px 12px 16px;position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border)}
+.snav .btn{flex:1}
+@keyframes xpu{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-28px)}}
+.toast{position:fixed;top:64px;right:14px;padding:6px 14px;border-radius:99px;font-weight:700;font-size:13px;z-index:999;pointer-events:none;animation:xpu 1s ease forwards}
+</style>
+</head>
+<body>
+<div class="app-header">
+  <a class="back-link" href="index.html">← Home</a>
+  <div class="header-info">
+    <div class="header-title">Acceleration & the Glide</div>
+    <div class="header-sub">Lesson 3 · Physics</div>
+  </div>
+  <div class="xp-pill" id="xp-pill">0 XP</div>
+</div>
+<div class="step-bar">
+  <div class="step-pip active" onclick="SE.show(0)"></div>
+  <div class="step-pip" onclick="SE.show(1)"></div>
+  <div class="step-pip" onclick="SE.show(2)"></div>
+  <div class="step-pip" onclick="SE.show(3)"></div>
+  <div class="step-pip" onclick="SE.show(4)"></div>
+  <div class="step-pip" onclick="SE.show(5)"></div>
+</div>
+<div class="step-label" id="step-label">Part 1 of 6</div>
+
+<div id="s0">
+  <div class="lc">
+    <div class="tag" style="background:#2f81f722;color:#2f81f7">The big idea</div>
+    <div class="bi">Acceleration is any change in speed — speeding up, slowing down, or changing direction.</div>
+    <div class="bt">In Lesson 1 you learned speed. In Lesson 2 you learned forces. Now they connect: when a net force acts on your glider it does not instantly change speed — it <strong>accelerates</strong>. That word just means speed is changing. Speeding up is acceleration. Slowing down is acceleration too.</div>
+    <div class="co"><strong>Newton in plain English:</strong> A net force always causes acceleration. Zero net force means zero acceleration — the glider holds constant speed. Your flight controller fights to keep net force at zero during cruise.</div>
+    <div class="co g"><strong>Why this matters:</strong> Your ArduPlane IMU reads acceleration 400 times per second. It integrates that to get velocity, then integrates again to get position. This chain runs constantly during every autonomous flight.</div>
+  </div>
+  <div class="sl">Runway demo — tap throttle and watch speed build</div>
+  <canvas class="vis" id="cv-rwy" height="140"></canvas>
+  <div class="mb-row">
+    <button class="mb on" onclick="rwyGo()">Apply throttle</button>
+    <button class="mb" onclick="rwyCut()">Cut throttle</button>
+    <button class="mb" onclick="rwyReset()">Reset</button>
+  </div>
+  <div class="sg">
+    <div class="st2"><div class="sl2">Airspeed</div><div class="sv" id="rv-spd">0<span class="su">m/s</span></div></div>
+    <div class="st2"><div class="sl2">Changing?</div><div class="sv" id="rv-chg" style="font-size:13px">Still</div></div>
+    <div class="st2"><div class="sl2">State</div><div class="sv" id="rv-state" style="font-size:12px">On runway</div></div>
+  </div>
+  <div class="co a">Speed builds gradually when you apply throttle — that gradual build IS acceleration. When cut, drag decelerates it gradually. The rate of change is the acceleration.</div>
+  <div class="snav"><button class="btn btnp" onclick="SE.next()">Next: Net force →</button></div>
+</div>
+
+<div id="s1" style="display:none">
+  <div class="lc">
+    <div class="tag" style="background:#2f81f722;color:#2f81f7">Net force causes acceleration</div>
+    <div class="bi">A net force always causes acceleration. Zero net force — zero acceleration — constant speed.</div>
+    <div class="bt">When thrust exceeds drag, the leftover forward force — the <strong>net force</strong> — causes the glider to accelerate. When thrust exactly equals drag, net force is zero and the glider holds constant speed. This is cruise. Drag the slider to find the balance point.</div>
+    <div class="co"><strong>The cruise insight:</strong> At cruise, net force = 0. The glider does not need force to keep moving — only to change speed. The motor is just replacing energy lost to drag, nothing more.</div>
+  </div>
+  <div class="sl">Throttle slider — find where thrust equals drag</div>
+  <canvas class="vis" id="cv-bal" height="140"></canvas>
+  <div class="cg">
+    <div class="cr">
+      <span class="cl">Throttle</span>
+      <input type="range" min="0" max="100" value="50" step="1" id="sl-bal" oninput="updateBalance()">
+      <span class="cv" id="cv-bal-v">50%</span>
+    </div>
+  </div>
+  <div class="sg">
+    <div class="st2"><div class="sl2">Thrust</div><div class="sv" id="sv-bt">25<span class="su">N</span></div></div>
+    <div class="st2"><div class="sl2">Drag (fixed)</div><div class="sv">25<span class="su">N</span></div></div>
+    <div class="st2"><div class="sl2">Net force</div><div class="sv" id="sv-bn">0<span class="su">N</span></div></div>
+  </div>
+  <div class="co a" id="bal-co">At 50%: thrust = drag = 25N. Net force = 0. Constant cruise speed.</div>
+  <div class="snav">
+    <button class="btn" onclick="SE.prev()">← Back</button>
+    <button class="btn btnp" onclick="SE.next()">Next: Takeoff roll →</button>
+  </div>
+</div>
+
+<div id="s2" style="display:none">
+  <div class="lc">
+    <div class="tag" style="background:#3fb95022;color:#3fb950">Speeding up</div>
+    <div class="bi">Acceleration is highest when speed is lowest — and fades as you approach cruise speed.</div>
+    <div class="bt">At the start of the takeoff roll, speed is near zero so drag is nearly zero. Almost all thrust becomes net force — maximum acceleration. As speed builds, drag catches up, net force shrinks, acceleration fades — even though you are still getting faster.</div>
+    <div class="co"><strong>The counterintuitive part:</strong> The glider accelerates fastest at the moment it looks most stationary. Once it is moving quickly it is barely accelerating at all. Full throttle the whole time — drag just catches up.</div>
+  </div>
+  <div class="sl">Takeoff roll — bars show net forward force at each speed</div>
+  <canvas class="vis" id="cv-to" height="180"></canvas>
+  <div class="cg">
+    <div class="cr">
+      <span class="cl">Throttle</span>
+      <input type="range" min="50" max="100" value="80" step="1" id="sl-to" oninput="updateTakeoff()">
+      <span class="cv" id="cv-to-v">80%</span>
+    </div>
+  </div>
+  <div class="sg">
+    <div class="st2"><div class="sl2">Cruise speed</div><div class="sv" id="sv-tcs">—<span class="su">m/s</span></div></div>
+    <div class="st2"><div class="sl2">Initial accel.</div><div class="sv" id="sv-tacc">—<span class="su">m/s²</span></div></div>
+    <div class="st2"><div class="sl2">Power</div><div class="sv" id="sv-tpwr" style="font-size:12px">—</div></div>
+  </div>
+  <div class="co a" id="to-co">Move the slider to see how throttle affects the takeoff roll.</div>
+  <div class="snav">
+    <button class="btn" onclick="SE.prev()">← Back</button>
+    <button class="btn btnp" onclick="SE.next()">Next: The glide →</button>
+  </div>
+</div>
+
+<div id="s3" style="display:none">
+  <div class="lc">
+    <div class="tag" style="background:#3fb95022;color:#3fb950">The glide</div>
+    <div class="bi">Cut the motor. Your glider does not fall — it glides. A quadcopter falls straight down.</div>
+    <div class="bt">When the motor is cut there is no thrust. But the wing still generates lift from forward airflow. The glider descends at a shallow angle — <strong>trading altitude for forward distance</strong>. The better the wing design, the shallower that angle and the further it travels.</div>
+    <div class="co"><strong>Glide ratio in practice:</strong> A 1:12 ratio means 1,200 m of range from 100 m altitude with no motor at all. Silent, efficient, and if the motor fails — you have a controlled landing instead of a crash.</div>
+    <div class="co g"><strong>Mission value:</strong> Cut the motor at altitude, silently overfly a target area, then relight the motor for the return trip. This is a real tactical capability that comes directly from good glide ratio design.</div>
+  </div>
+  <div class="sl">Motor power slider — watch glide angle change</div>
+  <canvas class="vis" id="cv-gl" height="180"></canvas>
+  <div class="cg">
+    <div class="cr">
+      <span class="cl">Motor power</span>
+      <input type="range" min="0" max="100" value="0" step="1" id="sl-gl" oninput="updateGlide()">
+      <span class="cv" id="cv-gl-v">0% — gliding</span>
+    </div>
+  </div>
+  <div class="sg">
+    <div class="st2"><div class="sl2">Airspeed</div><div class="sv" id="sv-gspd">18<span class="su">m/s</span></div></div>
+    <div class="st2"><div class="sl2">Sink rate</div><div class="sv" id="sv-gsink">1.5<span class="su">m/s</span></div></div>
+    <div class="st2"><div class="sl2">Glide ratio</div><div class="sv" id="sv-gratio">1:12</div></div>
+  </div>
+  <div class="co a" id="gl-co">Pure glide: no motor. Wing generates lift from airflow. 12m forward per 1m descended.</div>
+  <div class="snav">
+    <button class="btn" onclick="SE.prev()">← Back</button>
+    <button class="btn btnp" onclick="SE.next()">Guided notes →</button>
+  </div>
+</div>
+
+<div id="s4" style="display:none">
+  <div class="lc">
+    <div class="tag" style="background:#d2992222;color:#d29922">Guided notes</div>
+    <div class="bi">Cement what you just learned.</div>
+    <div class="bt">Fill in from memory. Tap Show answer to check. Your answers save automatically.</div>
+  </div>
+  <div class="gnw">
+    <div class="gnh">Guided notes — fill in as you read</div>
+    <div id="gn-items"></div>
+  </div>
+  <div class="snav">
+    <button class="btn" onclick="SE.prev()">← Back</button>
+    <button class="btn btnp" onclick="SE.next()">Quiz →</button>
+  </div>
+</div>
+
+<div id="s5" style="display:none">
+  <div class="lc">
+    <div class="tag" style="background:#d2992222;color:#d29922">Practice — 5 questions</div>
+    <div class="bi">Test your understanding.</div>
+    <div class="bt">Use the back button to revisit any question you have already answered.</div>
+  </div>
+  <div class="qdots" id="qdots"></div>
+  <div class="qw" id="qzone"></div>
+</div>
+
+<script>
+const KEY = 'glider_academy_v5';
+function loadST(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):{xp:0,streak:0,lastStudy:null,done:[0,1,2],notes:{},quizBest:{}};}catch(e){return{xp:0,streak:0,lastStudy:null,done:[0,1,2],notes:{},quizBest:{}};}}
+function saveST(s){try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}}
+const ST=loadST();[0,1,2].forEach(i=>{if(!ST.done.includes(i))ST.done.push(i);});
+function addXP(n){ST.xp+=n;saveST(ST);document.getElementById('xp-pill').textContent=ST.xp+' XP';const el=document.createElement('div');el.className='toast';el.textContent='+'+n+' XP';el.style.cssText='background:#3fb950;color:#000';document.body.appendChild(el);setTimeout(()=>el.remove(),1050);}
+function markStudied(){const td=new Date().toDateString(),yd=new Date(Date.now()-86400000).toDateString();if(ST.lastStudy!==td){ST.streak=ST.lastStudy===yd?ST.streak+1:1;ST.lastStudy=td;}saveST(ST);}
+function saveNote(key,val){if(!ST.notes[2])ST.notes[2]={};ST.notes[2][key]=val;saveST(ST);}
+
+const STEPS=['s0','s1','s2','s3','s4','s5'];
+const SE={cur:0,show(n){STEPS.forEach((id,i)=>{const el=document.getElementById(id);if(el)el.style.display=i===n?'block':'none';});this.cur=n;this.updatePips();window.scrollTo(0,0);requestAnimationFrame(()=>setTimeout(()=>this.redraw(n),50));},next(){if(this.cur<STEPS.length-1)this.show(this.cur+1);},prev(){if(this.cur>0)this.show(this.cur-1);},updatePips(){document.querySelectorAll('.step-pip').forEach((p,i)=>{p.className='step-pip'+(i<this.cur?' done':i===this.cur?' active':'');});const lbl=document.getElementById('step-label');if(lbl)lbl.textContent='Part '+(this.cur+1)+' of '+STEPS.length;},redraw(n){if(n===0)drawRunway(rwySpd,rwyPos,rwyMode);if(n===1)updateBalance();if(n===2)updateTakeoff();if(n===3)updateGlide();}};
+
+const GNOTES=[
+  {q:'Acceleration is any _____ in speed. This includes speeding up, slowing down, and changing _____.',hint:'What two things can change about motion?',answer:'change in speed — also changing direction counts as acceleration even at constant speed'},
+  {q:'During the takeoff roll, acceleration is highest at the _____ because drag is nearly _____ at low speed.',hint:'When is the net force largest?',answer:'start of the roll — drag is nearly zero so almost all thrust becomes net force, giving maximum acceleration'},
+  {q:'At cruise, the net force is _____ and acceleration is _____.',hint:'What do balanced forces mean for acceleration?',answer:'zero net force — zero acceleration, so the glider maintains constant speed indefinitely'},
+  {q:'When the motor is cut, a fixed-wing glider _____ rather than falling, because the wing still generates _____ from airflow.',hint:'What force does the wing provide?',answer:'glides at a shallow angle — the wing still generates lift from forward airflow, converting altitude into range'},
+  {q:'Glide ratio 1:15 from 300 m altitude = _____ metres of motor-off range.',hint:'Multiply altitude by the glide ratio number.',answer:'4,500 metres — 300 x 15 = 4,500 m of silent autonomous glide range'}
+];
+function buildNotes(){const saved=ST.notes[2]||{};let html='';GNOTES.forEach((n,i)=>{const val=saved['gn'+i]||'';html+=`<div class="gni"><div class="gnq">${n.q}</div><div class="gnt">Hint: ${n.hint}</div><input type="text" class="gninp${val?' hv':''}" id="gn${i}" value="${val.replace(/"/g,'&quot;')}" placeholder="Your answer..." oninput="onGN(${i},this.value)" autocomplete="off" spellcheck="false"><div style="display:flex;align-items:center;gap:8px;margin-top:5px"><button class="gnrb" onclick="revGN(${i})">Show answer</button><span id="gns${i}" style="font-size:11px;color:var(--t3);opacity:0;transition:opacity .3s">Saved</span></div><div class="gna" id="gna${i}">${n.answer}</div></div>`;});document.getElementById('gn-items').innerHTML=html;}
+function onGN(i,val){const inp=document.getElementById('gn'+i);if(inp)inp.classList.toggle('hv',val.length>0);saveNote('gn'+i,val);const ns=document.getElementById('gns'+i);if(ns){ns.style.opacity='1';setTimeout(()=>ns.style.opacity='0',1400);}}
+function revGN(i){const el=document.getElementById('gna'+i);if(el)el.style.display=el.style.display==='block'?'none':'block';}
+
+const QUIZZES=[
+  {q:'Why does a glider accelerate fastest at the very start of the takeoff roll?',opts:['The motor is warmest then','Drag is nearly zero at low speed so almost all thrust is net force','Gravity assists at low speed','The gyro helps during the roll'],c:1,good:'Correct. At low speed drag is tiny so almost all thrust becomes net force. Maximum net force = maximum acceleration.',miss:'Drag increases with speed. At low speed drag is tiny = huge net force = maximum acceleration.'},
+  {q:'A glider is flying at constant speed. What must be true about thrust and drag?',opts:['Thrust is bigger than drag','Drag is bigger than thrust','Thrust and drag are exactly equal','There is no drag at cruise'],c:2,good:'Exactly right. Constant speed = zero acceleration = zero net force = thrust must equal drag perfectly.',miss:'Constant speed means zero net force. Zero net force means thrust = drag exactly.'},
+  {q:'Motor cuts out at 200 m altitude. Glide ratio 1:10. How far does the glider travel?',opts:['200 m','1,000 m','2,000 m','20,000 m'],c:2,good:'2,000 m — Range = altitude x glide ratio = 200 x 10 = 2,000 metres.',miss:'Range = altitude x glide ratio = 200 x 10 = 2,000 metres.'},
+  {q:'At full throttle during takeoff the acceleration is slowing down. Why?',opts:['Motor getting weaker','Drag increasing with speed reduces net force','Gravity pulls harder at speed','Pilot reducing throttle'],c:1,good:'Right. Drag increases with speed. As speed builds drag catches up with thrust, net force shrinks, acceleration fades.',miss:'Drag grows with speed. More speed = more drag = less net force = less acceleration.'},
+  {q:'You want to silently survey a 3 km stretch from 300 m altitude motor off. Minimum glide ratio?',opts:['1:5','1:10','1:15','1:30'],c:1,good:'At least 1:10 — minimum ratio = range / altitude = 3000 / 300 = 10.',miss:'Minimum glide ratio = range / altitude = 3000 / 300 = 10.'}
+];
+let qCur=0,qScores=[],qHistory=[],qAnswered=false;
+function buildDots(){document.getElementById('qdots').innerHTML=QUIZZES.map((_,i)=>`<div class="qd" id="qd${i}" onclick="jumpQ(${i})"></div>`).join('');}
+function updateDots(){QUIZZES.forEach((_,i)=>{const d=document.getElementById('qd'+i);if(!d)return;d.className='qd'+(qScores[i]===true?' r':qScores[i]===false?' w':i===qCur?' curr':'');});}
+function renderQ(){const qz=document.getElementById('qzone');if(!qz)return;if(qCur>=QUIZZES.length){showScore();return;}qAnswered=qHistory[qCur]!==undefined;const q=QUIZZES[qCur];const right=qScores.filter(x=>x===true).length;qz.innerHTML=`<div class="qb"><div class="qm"><span class="qn">Q${qCur+1} / ${QUIZZES.length}</span><span class="qs">${right} correct</span></div><div class="qq">${q.q}</div><div class="qop">${q.opts.map((o,i)=>`<button class="qo" id="qo${i}" onclick="ansQ(${i})">${o}</button>`).join('')}</div><div class="qfb" id="qfb"></div><div class="qnav"><button class="qnb" ${qCur===0?'disabled':''} onclick="prevQ()">Back</button><span style="font-size:12px;color:var(--t3)">${qCur+1} of ${QUIZZES.length}</span><button class="qnb p" id="qnxt" style="display:none" onclick="nextQ()">Next</button></div></div>`;updateDots();if(qAnswered){const prev=qHistory[qCur],qi=QUIZZES[qCur];document.querySelectorAll('.qo').forEach(o=>o.disabled=true);document.getElementById('qo'+prev).classList.add(prev===qi.c?'ok':'bad');if(prev!==qi.c)document.getElementById('qo'+qi.c).classList.add('rev');const fb=document.getElementById('qfb');fb.classList.add('on');fb.innerHTML=`<span class="${prev===qi.c?'fok':'fbad'}">${prev===qi.c?'Correct.':'Not quite.'}</span> ${prev===qi.c?qi.good:qi.miss}`;document.getElementById('qnxt').style.display='block';}}
+function ansQ(i){if(qAnswered)return;qAnswered=true;const q=QUIZZES[qCur];document.querySelectorAll('.qo').forEach(o=>o.disabled=true);const ok=i===q.c;document.getElementById('qo'+i).classList.add(ok?'ok':'bad');if(!ok)document.getElementById('qo'+q.c).classList.add('rev');const fb=document.getElementById('qfb');fb.classList.add('on');fb.innerHTML=`<span class="${ok?'fok':'fbad'}">${ok?'Correct.':'Not quite.'}</span> ${ok?q.good:q.miss}`;if(qScores[qCur]===undefined){qScores[qCur]=ok;if(ok)addXP(10);}qHistory[qCur]=i;updateDots();document.getElementById('qnxt').style.display='block';setTimeout(()=>nextQ(),2400);}
+function nextQ(){qCur++;renderQ();}
+function prevQ(){if(qCur>0){qCur--;renderQ();}}
+function jumpQ(i){const maxR=Math.max(qCur,...qHistory.map((_,idx)=>qHistory[idx]!==undefined?idx:-1));if(i<=maxR+1){qCur=i;renderQ();}}
+function showScore(){const right=qScores.filter(x=>x===true).length,tot=QUIZZES.length,pct=Math.round(right/tot*100);let msg,sub,col;if(right===tot){msg='Perfect score!';sub='Every concept is solid.';col='var(--teal)';}else if(right>=Math.ceil(tot*0.6)){msg='Good work.';sub='Core ideas are there.';col='var(--blue)';}else{msg='Review and retry.';sub='Scroll back through the lesson then try again.';col='var(--amber)';}if(!ST.done.includes(2)&&right>=Math.ceil(tot*0.6)){ST.done.push(2);addXP(50);saveST(ST);}document.getElementById('qzone').innerHTML=`<div class="score-sc"><div class="scn" style="color:${col}">${right}/${tot}</div><div class="scp">${pct}%</div><div class="scm">${msg}</div><div class="scs">${sub}</div><div class="btn-g">${right<tot?'<button class="btn" onclick="retryQ()">Retry</button>':''}${right>=Math.ceil(tot*0.6)?'<a class="btn btnp" href="lesson-4.html">Lesson 4</a>':''}<a class="btn" href="index.html">Home</a></div></div>`;}
+function retryQ(){qCur=0;qScores=[];qHistory=[];qAnswered=false;buildDots();renderQ();}
+
+let rwySpd=0,rwyPos=0.03,rwyMode='idle',rwyRaf=null;
+function drawRunway(spd,pos,mode){const cv=document.getElementById('cv-rwy');if(!cv)return;const W=cv.offsetWidth||340,H=140;cv.width=W;cv.height=H;const ctx=cv.getContext('2d');ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);ctx.fillStyle='#21262d';ctx.fillRect(0,H-28,W,28);ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(0,H-28);ctx.lineTo(W,H-28);ctx.stroke();ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.setLineDash([8,6]);ctx.beginPath();ctx.moveTo(20,72);ctx.lineTo(W-20,72);ctx.stroke();ctx.setLineDash([]);const gx=20+pos*(W-40);const gc=mode==='go'?'#2f81f7':mode==='cut'?'#d29922':'#8b949e';ctx.strokeStyle=gc;ctx.fillStyle='#161b22';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(gx+16,72);ctx.lineTo(gx-12,68);ctx.lineTo(gx-16,72);ctx.lineTo(gx-12,76);ctx.closePath();ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(gx-2,72);ctx.lineTo(gx+8,65);ctx.lineTo(gx+10,66);ctx.lineTo(gx,72);ctx.closePath();ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(gx-2,72);ctx.lineTo(gx+8,79);ctx.lineTo(gx+10,78);ctx.lineTo(gx,72);ctx.closePath();ctx.fill();ctx.stroke();if(spd>0){for(let i=1;i<=3;i++){ctx.strokeStyle=`rgba(139,148,158,${0.4-i*0.1})`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(gx-16-i*10,72);ctx.lineTo(gx-16-i*6,68);ctx.stroke();}}ctx.fillStyle=gc;ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(spd.toFixed(1)+' m/s',gx,58);}
+function rwyGo(){rwyMode='go';if(rwyRaf){cancelAnimationFrame(rwyRaf);rwyRaf=null;}function tick(){rwySpd=Math.min(rwySpd+0.08,18);rwyPos+=rwySpd*0.003;if(rwyPos>0.97)rwyPos=0.03;drawRunway(rwySpd,rwyPos,'go');document.getElementById('rv-spd').innerHTML=rwySpd.toFixed(1)+'<span class="su">m/s</span>';document.getElementById('rv-chg').textContent=rwySpd<17.8?'Speeding up':'Constant';document.getElementById('rv-state').textContent=rwySpd<17.8?'Accelerating':'Cruising';rwyRaf=requestAnimationFrame(tick);}tick();}
+function rwyCut(){rwyMode='cut';if(rwyRaf){cancelAnimationFrame(rwyRaf);rwyRaf=null;}function tick(){rwySpd=Math.max(rwySpd-0.06,0);rwyPos+=rwySpd*0.003;if(rwyPos>0.97)rwyPos=0.03;drawRunway(rwySpd,rwyPos,'cut');document.getElementById('rv-spd').innerHTML=rwySpd.toFixed(1)+'<span class="su">m/s</span>';document.getElementById('rv-chg').textContent=rwySpd>0.1?'Slowing down':'Constant';document.getElementById('rv-state').textContent=rwySpd>0.2?'Decelerating':'Stopped';if(rwySpd>0.05)rwyRaf=requestAnimationFrame(tick);}tick();}
+function rwyReset(){if(rwyRaf){cancelAnimationFrame(rwyRaf);rwyRaf=null;}rwySpd=0;rwyPos=0.03;rwyMode='idle';drawRunway(0,0.03,'idle');document.getElementById('rv-spd').innerHTML='0<span class="su">m/s</span>';document.getElementById('rv-chg').textContent='Still';document.getElementById('rv-state').textContent='On runway';}
+
+function updateBalance(){const pct=parseInt(document.getElementById('sl-bal').value);document.getElementById('cv-bal-v').textContent=pct+'%';const thrust=Math.round(pct*0.5),drag=25,net=thrust-drag;document.getElementById('sv-bt').innerHTML=thrust+'<span class="su">N</span>';document.getElementById('sv-bn').innerHTML=(net>0?'+':'')+net+'<span class="su">N</span>';const cv=document.getElementById('cv-bal');if(!cv)return;const W=cv.offsetWidth||340,H=140;cv.width=W;cv.height=H;const ctx=cv.getContext('2d');ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);ctx.fillStyle='#21262d';ctx.fillRect(0,H-28,W,28);const cx=W/2,cy=60;const tp=Math.min(100,thrust*1.8),dp=Math.min(100,drag*1.8);const nc=Math.abs(net)<1?'#3fb950':net>0?'#2f81f7':'#f85149';ctx.strokeStyle=nc;ctx.fillStyle='#161b22';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(cx+16,cy);ctx.lineTo(cx-12,cy-4);ctx.lineTo(cx-16,cy);ctx.lineTo(cx-12,cy+4);ctx.closePath();ctx.fill();ctx.stroke();ctx.strokeStyle='#2f81f7';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(cx+20,cy);ctx.lineTo(cx+20+tp,cy);ctx.stroke();ctx.fillStyle='#2f81f7';ctx.beginPath();ctx.moveTo(cx+22+tp,cy);ctx.lineTo(cx+20+tp,cy-5);ctx.lineTo(cx+20+tp,cy+5);ctx.fill();ctx.font='bold 11px sans-serif';ctx.fillStyle='#2f81f7';ctx.textAlign='center';ctx.fillText(thrust+'N',cx+20+tp/2,cy-8);ctx.strokeStyle='#f85149';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(cx-20,cy);ctx.lineTo(cx-20-dp,cy);ctx.stroke();ctx.fillStyle='#f85149';ctx.beginPath();ctx.moveTo(cx-22-dp,cy);ctx.lineTo(cx-20-dp,cy-5);ctx.lineTo(cx-20-dp,cy+5);ctx.fill();ctx.fillText(drag+'N',cx-20-dp/2,cy-8);const msgs={'-1':'<strong>Drag winning.</strong> Net backward force = '+Math.abs(net)+' N. Glider decelerating.','0':'<strong>Balanced — cruise.</strong> Net force = 0. Glider holds steady speed.','1':'<strong>Thrust winning.</strong> Net forward force = '+net+' N. Glider accelerating.'};const k=net<-1?'-1':net>1?'1':'0';document.getElementById('bal-co').innerHTML=msgs[k];}
+
+function updateTakeoff(){const pct=parseInt(document.getElementById('sl-to').value);document.getElementById('cv-to-v').textContent=pct+'%';const maxT=pct*0.5,cs=Math.round(maxT*0.72),ia=Math.max(0,(maxT-2)/2).toFixed(1);document.getElementById('sv-tcs').innerHTML=cs+'<span class="su">m/s</span>';document.getElementById('sv-tacc').innerHTML=ia+'<span class="su">m/s²</span>';document.getElementById('sv-tpwr').textContent=pct>=85?'High':pct>=70?'Moderate':'Low';const cv=document.getElementById('cv-to');if(!cv)return;const W=cv.offsetWidth||340,H=180;cv.width=W;cv.height=H;const ctx=cv.getContext('2d');ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);ctx.fillStyle='#21262d';ctx.fillRect(0,H-28,W,28);ctx.font='bold 10px sans-serif';ctx.fillStyle='#484f58';ctx.textAlign='center';ctx.fillText('Net forward force during takeoff roll — bar height = acceleration',W/2,16);const segs=7;for(let i=0;i<segs;i++){const frac=(i+1)/segs,dragF=maxT*frac*0.85,net=Math.max(0,maxT-dragF);const op=Math.max(0.08,net/maxT);const x=20+i*(W-40)/segs,bw=(W-40)/segs-4;const barH=Math.round(op*70);ctx.fillStyle=`rgba(47,129,247,${op.toFixed(2)})`;ctx.fillRect(x,H-28-barH,bw,barH);ctx.fillStyle='#484f58';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText(Math.round(cs*frac)+' m/s',x+bw/2,H-12);}document.getElementById('to-co').innerHTML=pct>=85?'<strong>Full power.</strong> Massive net force early = rapid acceleration. Bars shrink as drag catches up.':'<strong>Partial throttle.</strong> Smaller net force = slower acceleration to cruise speed.';}
+
+function updateGlide(){const pct=parseInt(document.getElementById('sl-gl').value);document.getElementById('cv-gl-v').textContent=pct===0?'0% — gliding':pct+'%';const spd=(18+pct*0.12).toFixed(1),sink=Math.max(0.3,(1.8-pct*0.015)).toFixed(2);const ratio=Math.round(parseFloat(spd)/parseFloat(sink));const ang=(Math.atan2(parseFloat(sink),parseFloat(spd))*180/Math.PI).toFixed(1);document.getElementById('sv-gspd').innerHTML=spd+'<span class="su">m/s</span>';document.getElementById('sv-gsink').innerHTML=sink+'<span class="su">m/s</span>';document.getElementById('sv-gratio').textContent='1:'+ratio;const cv=document.getElementById('cv-gl');if(!cv)return;const W=cv.offsetWidth||340,H=180;cv.width=W;cv.height=H;const ctx=cv.getContext('2d');ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);ctx.fillStyle='#21262d';ctx.fillRect(0,H*0.7,W,H*0.3);const sX=30,sY=30,eX=W-20;const eY=Math.min(sY+(eX-sX)*Math.tan(parseFloat(ang)*Math.PI/180),H-40);ctx.strokeStyle='rgba(63,185,80,0.4)';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(sX,sY);ctx.lineTo(eX,eY);ctx.stroke();ctx.setLineDash([]);const mx=(sX+eX)/2,my=(sY+eY)/2;const gAng=Math.atan2(eY-sY,eX-sX);ctx.save();ctx.translate(mx,my);ctx.rotate(gAng);ctx.strokeStyle='#3fb950';ctx.fillStyle='#161b22';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(16,0);ctx.lineTo(-12,-4);ctx.lineTo(-16,0);ctx.lineTo(-12,4);ctx.closePath();ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(-2,0);ctx.lineTo(8,-7);ctx.lineTo(10,-6);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(-2,0);ctx.lineTo(8,7);ctx.lineTo(10,6);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();ctx.fillStyle='#3fb950';ctx.font='bold 11px sans-serif';ctx.textAlign='left';ctx.fillText('Glide angle: '+ang+'°',sX,sY-8);ctx.fillStyle='#d29922';ctx.textAlign='right';ctx.fillText('From 100m: '+Math.round(100*ratio)+'m range',W-20,H-8);document.getElementById('gl-co').innerHTML=pct===0?`<strong>Pure glide.</strong> No motor. Ratio 1:${ratio}. From 100m: ${Math.round(100*ratio)}m silent range.`:pct<50?`<strong>Low motor assist.</strong> Glide ratio improved to 1:${ratio}.`:'<strong>Powered cruise.</strong> Motor overcoming drag, nearly level flight.';}
+
+document.addEventListener('DOMContentLoaded',()=>{document.getElementById('xp-pill').textContent=ST.xp+' XP';markStudied();buildNotes();buildDots();renderQ();SE.updatePips();setTimeout(()=>drawRunway(0,0.03,'idle'),60);});
+</script>
+</body>
+</html>
